@@ -1,0 +1,37 @@
+Date : 5/09/2016
+Time : 8:44 pm
+Author : Chris Andrew
+
+We have put junction detection on hold and have decided to take a different approach.
+The plan is to extract various texture based features, pool them together and extract the best ones to differentiate.
+Santhu has finished writing code for the Edge Directional features and has run it on the entire dataset.
+She extracted feature in 8, 12, 16 directions each. She later differentiated the 16 feature vector to get a 15 feature vector
+Used my code to separate them from the combined results.
+Running tests to find out which ones are the best.
+
+The files are:
+Edge[8,12,16,15,all]
+Edge_LDA[8,12,16,15,all]
+
+Ranking them using NNC:
+Edge_8 : 40.6758 %
+Edge_12 : 55.4256 %
+Edge_16 : 55.9454 %
+Edge_15 : 60.1689 %
+Edge_all : 61.9883 %
+
+We observe that combining all the features gives the best results.
+Trying FLDA on the files and seeing if there is an improvement
+Ranking them:
+Edge_8 : 43.7947 %
+Edge_12 : 50.6173 %
+Edge_16 : 59.1943 %
+Edge_15 : 68.4211 %
+Edge_all : 61.2736 %
+
+Trying only PCA
+Edge_8 :
+Edge_12 : 47.1735 %
+Edge_16 :
+Edge_15 :
+Edge_all :
