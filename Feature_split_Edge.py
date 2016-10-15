@@ -40,3 +40,10 @@ for i in range(4):
 				f.write(str(x[k])+',')
 			else:
 				f.write(str(x[k])+'\n')
+	f.close()
+f = open("Edge_all.csv","w")
+for i in range(len(train_data)):
+	for data in train_data[i]:
+		f.write(str(data)+',')
+	f.write(str(int(train_class[i]))+'\n')
+f.close()

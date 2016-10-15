@@ -1,7 +1,7 @@
 import pdb
+folder = ""
 pathcsv = "data_fullimg_csv/"
 patharff = "data_fullimg_arff/"
-folder = ""
 inpath = pathcsv+folder
 outpath = patharff+folder
 # names = ["GSCM_1","GSCM_2","GSCM_3","GSCM_4","GSCM_5","GSCM_1_LDA","GSCM_2_LDA","GSCM_3_LDA","GSCM_4_LDA","GSCM_5_LDA","GSCM_all","GSCM_all_LDA"]

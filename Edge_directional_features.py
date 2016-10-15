@@ -1,4 +1,5 @@
 import numpy as np
+import pdb
 import time
 import os
 from skimage.filters import sobel,threshold_otsu
@@ -104,18 +105,18 @@ def differentiate(vect):
         new_vect[i-1] = vect[i] - vect[i-1]
     return new_vect
 
-outfolder = "/home/chris/honours/Texture_Analysis/normal_data/"
-setname = "SET_3/"
-folderlist = os.listdir(outfolder+setname)
-dictionary = get_ids(outfolder)
+outfolder = "/home/chris/honours/fullimg_norm/"
+folderlist = os.listdir(outfolder)
+dictionary = get_ids("")
+folderlist.sort()
 f = open(outfolder+"Edge_direction.csv","w")
 print "Starting loop"
 for name in folderlist:
-    if len(name)!=13 and name!="writerids.csv":
+    if len(name)!=13 and name!="writerids.csv" and name!="Edge_direction.csv":
         n = name[0:-4]
         print "Processing "+ n + ".png"
         start_time = time.time()
-        img= io.imread(outfolder+setname+n+".png");
+        img= io.imread(outfolder+n+".png");
         eimg=sobel(img)
         thresh=threshold_otsu(eimg)
         eimg[eimg>thresh] = 1
