@@ -5,7 +5,7 @@ patharff = "data_fullimg_arff/"
 inpath = pathcsv+folder
 outpath = patharff+folder
 # names = ["GSCM_1","GSCM_2","GSCM_3","GSCM_4","GSCM_5","GSCM_1_LDA","GSCM_2_LDA","GSCM_3_LDA","GSCM_4_LDA","GSCM_5_LDA","GSCM_all","GSCM_all_LDA"]
-names = ["Gabor_GSCM","Gabor_GSCM_LDA",]
+names = ["GSCM_Edge","GSCM_Edge_LDA",]
 for name in names:
     train_file = open(inpath+name+".csv","r")
     train_data=[]
