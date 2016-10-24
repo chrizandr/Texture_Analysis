@@ -1,8 +1,8 @@
 import pdb
 
-featureA = open("data_fullimg_csv/GSCM_fullimg/GSCM_all.csv","r")
-featureB = open("data_fullimg_csv/Edge_direction_fullimg/Edge_all.csv","r")
-feature = open("data_fullimg_csv/GSCM_Edge.csv","w")
+featureA = open("data_fullimg_csv/GSCM_Edge.csv","r")
+featureB = open("data_fullimg_csv/Gabor_fullimg/Gabor_all.csv","r")
+feature = open("data_fullimg_csv/GSCM_Edge_Gabor.csv","w")
 
 data_A = list()
 data_B = list()
