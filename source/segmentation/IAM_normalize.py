@@ -7,21 +7,20 @@ import skimage.feature
 from matplotlib import pyplot as plt
 import xml.etree.ElementTree as ET
 
-def normalize_img2(img,xml):
+def normalize_img(img,xml):
     img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
     ret, img = cv2.threshold(img , 0 , 1 , cv2.THRESH_BINARY + cv2.THRESH_OTSU)
     root=xml.getroot()
     handwritten_text = root.findall("handwritten-part")[0]
     lines = handwritten_text.findall("line")
-    line_list = []
+    line_list = list()
     for line in lines:
         words = line.findall("word")
-        cords = []
+        cords = list()
         max_height_word = 0
         for word in words:
             characters = word.findall("cmp")
             if len(characters)>0:
-
                 max_height = int(characters[0].attrib["height"])
                 min_cord = int(characters[0].attrib["y"])
                 max_cord  = max_height + min_cord
@@ -49,7 +48,6 @@ def normalize_img2(img,xml):
         for cord in cords:
             if cord[1]-cord[0]!=max_height_word:
                 cord[1]= max_height_word + cord[0]
-
         new_line = img[cords[0][0]:cords[0][1],cords[0][2]:cords[0][3]]
         for l in range(1,len(cords)):
             new_line = np.concatenate((new_line,img[cords[l][0]:cords[l][1],cords[l][2]:cords[l][3]]),1)
@@ -90,10 +88,11 @@ for name in folderlist:
             a=root.attrib
             label = a['writer-id']
             img = cv2.imread(folder+n+".png")
-            img = normalize_img2(img,tree)
+            img = normalize_img(img,tree)
             img = img*255
             f.write(n+','+label+'\n')
             x = cv2.imwrite(outfolder+n+".png",img)
             print x
         except IOError:
             print "Error at "+ name
+        

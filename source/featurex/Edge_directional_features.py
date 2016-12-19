@@ -91,13 +91,6 @@ def Edge_direction(binary):
 
     return orient8[0:-1],orient12[0:-1],orient16[0:-1]
 
-def get_ids(outfolder):
-    f = open(outfolder+"writerids.csv","r")
-    dictionary = {}
-    for line in f:
-        line = line.split(",")
-        dictionary[line[0]] = line[1]
-    return dictionary
 
 def differentiate(vect):
     new_vect =[0 for i in range(len(vect)-1)]
