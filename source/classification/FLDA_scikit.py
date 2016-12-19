@@ -1,7 +1,7 @@
 import pdb
 from sklearn.lda import LDA
 
-filenames = ["GSCM_Edge",]
+filenames = ["GSCM_Edge_Gabor",]
 for filename in filenames:
     path = "data_fullimg_csv/"
 
