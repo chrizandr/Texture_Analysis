@@ -1,5 +1,6 @@
 import pdb
-train_file = open("data_fullimg_csv/Edge_direction_fullimg/Edge_direction.csv","r")
+path = "/home/chris/honours/Texture_Analysis/data_block_csv/Edge/"
+train_file = open(path+ "Edge.csv","r")
 train_data = []
 train_class = []
 for line in train_file:
@@ -29,7 +30,7 @@ data_list.append(Edge_8)
 data_list.append(Edge_12)
 data_list.append(Edge_16)
 data_list.append(Edge_dp_16)
-path = "data_fullimg_csv/Edge_direction_fullimg/"
+
 file_list=["Edge_8","Edge_12","Edge_16","Edge_dp_16"]
 for i in range(4):
 	f = open(path+file_list[i]+".csv","w")

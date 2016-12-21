@@ -1,9 +1,9 @@
 import pdb
 from sklearn.lda import LDA
 
-filenames = ["GSCM_Edge_Gabor",]
+filenames = ["Edge_all","Edge_8","Edge_12","Edge_16","Edge_dp_16",]
 for filename in filenames:
-    path = "data_fullimg_csv/"
+    path = "/home/chris/honours/Texture_Analysis/data_block_csv/Edge/"
 
     f = open(path+filename+".csv",'r')
     train_data = list()
@@ -11,7 +11,7 @@ for filename in filenames:
     for line in f:
         l = line.strip()
         l = l.split(',')
-        l = map(float , l)
+        l = list(map(float , l))
         train_data.append(l[0:-1])
         train_class.append(int(l[-1]))
     f.close()

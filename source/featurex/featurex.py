@@ -5,7 +5,9 @@
 
 # **************************************************
 # Import the source for the desired features from the feature source file. Use below given format.
-# from <feature_source> import *
+from Gabor import *
+import os
+import time
 # NOTE: Please import only one feature source. Multiple source import will confuse the compiler.
 # **************************************************
 
@@ -17,12 +19,17 @@ def get_ids(id_file):
         dictionary[line[0]] = line[1]
     return dictionary
 
-data_path = "/home/chris/honours/fullimg/"
+# **************************************************
+
+
+# **************************************************
+
+data_path = "/home/chris/honours/text_blocks/"
 output_file ="output.csv"
 # Give the path of the file conataining the class labels for the images.
 # Format for the file [each new line conataining] in '.csv' format
 # <filename[without the file extension]>,<classlabel>
-class_labels = "/home/chris/honours/Texture_Analysis/writerids.csv"
+class_labels = "/home/chris/honours/text_blocks/writerids.csv"
 # Construct a dictionary out of the given file
 labels = get_ids(class_labels)
 # Get a list of all the files in teh dataset folder [data_path] and sort them alphabetically

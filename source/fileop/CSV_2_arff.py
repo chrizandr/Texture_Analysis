@@ -1,11 +1,12 @@
 import pdb
-folder = ""
-pathcsv = ""
-patharff = ""
+folder = "Edge/"
+pathcsv = "/home/chris/honours/Texture_Analysis/data_block_csv/"
+patharff = "/home/chris/honours/Texture_Analysis/data_block_arff/"
 inpath = pathcsv+folder
 outpath = patharff+folder
-# names = ["GSCM_1","GSCM_2","GSCM_3","GSCM_4","GSCM_5","GSCM_1_LDA","GSCM_2_LDA","GSCM_3_LDA","GSCM_4_LDA","GSCM_5_LDA","GSCM_all","GSCM_all_LDA"]
-names = ["test"]
+# names = ["GSCM_1","GSCM_2","GSCM_3","GSCM_4","GSCM_5","GSCM_all","GSCM_1_LDA","GSCM_2_LDA","GSCM_3_LDA","GSCM_4_LDA","GSCM_5_LDA","GSCM_all_LDA"]
+# names = ["Gabor_all", "Gabor_4", "Gabor_8", "Gabor_16", "Gabor_32", "Gabor_all_LDA", "Gabor_4_LDA", "Gabor_8_LDA", "Gabor_16_LDA", "Gabor_32_LDA", ]
+names = ["Edge_all","Edge_8","Edge_12","Edge_16","Edge_dp_16","Edge_all_LDA","Edge_8_LDA","Edge_12_LDA","Edge_16_LDA","Edge_dp_16_LDA",]
 for name in names:
     train_file = open(inpath+name+".csv","r")
     train_data=[]
@@ -13,10 +14,9 @@ for name in names:
     for line in train_file:
         l = line.strip()
         l = l.split(',')
-        l = map(float , l)
+        l = list(map(float , l))
         train_data.append(l[0:-1])
         train_class.append(int(l[-1]))
-
     classnumb = []
     for i in train_class:
         if i not in classnumb:
