@@ -6,24 +6,26 @@ import os
 import matplotlib.pyplot as plt
 import pdb
 # --------------------------------------------
-def segment_text(img):
+def segment_text(img , gimg):
     # ------------------------------------
     padding = 50
     neigbourhood = 100
     # Cutting out the printed region. Vertical projections of mid-point neigbourhood has local minima
-    img = img[:,padding:img.shape[1]-padding]
+    img = img[:,padding:img.shape[1]-padding/2]
+    gimg = gimg[:,padding:gimg.shape[1]-padding/2]
     mid = int(img.shape[1]/2)
     proj = projection(img[:,mid-neigbourhood:mid+neigbourhood],1)
     start,end = cluster3((proj==0).nonzero()[1])
-    seg_img = img[start:end,:]
+    seg_img = gimg[start:end,:]
+    return seg_img
     # ---------------------
     # Removing the remainder white background and returning only the text block
-    threshold = 20
-    max_ver, max_hor = seg_img.shape
-    hor_points = (projection(seg_img,2) <= max_ver-threshold).nonzero()[1]
-    ver_points = (projection(seg_img,1) <= max_hor-threshold).nonzero()[1]
-    # ------------------------------------
-    return seg_img[ver_points[0]-padding:ver_points[-1]+padding,hor_points[0]:hor_points[-1]]
+    # threshold = 20
+    # max_ver, max_hor = seg_img.shape
+    # hor_points = (projection(seg_img,2) <= max_ver-threshold).nonzero()[1]
+    # ver_points = (projection(seg_img,1) <= max_hor-threshold).nonzero()[1]
+    # # ------------------------------------
+    # return seg_img[ver_points[0]-padding:ver_points[-1]+padding,hor_points[0]:hor_points[-1]]
 
 def reconstruct(img):
     # ------------------------------------
@@ -108,14 +110,8 @@ for name in folderlist:
         # try:
         print("Processing "+ name)
         img = cv2.imread(data_path + name , 0)
-        img = cv2.threshold(img , 0 , 1 , cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
-        nimg = segment_text(img)
-        # pdb.set_trace()
+        b_img = cv2.threshold(img , 0 , 1 , cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
+        nimg = segment_text(b_img, img)
         filename = output_path + name
-        nimg = nimg * 255
         x = cv2.imwrite(filename , nimg)
-
-        # except:
-        #     print("Error at :" + name)
-        #     log.write(name+'\n')
 log.close()

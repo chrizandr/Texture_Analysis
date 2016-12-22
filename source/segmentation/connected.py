@@ -1,8 +1,10 @@
 import cv2
-# import pdb
+import matplotlib.pyplot
+import pdb
 import numpy as np
 import os
 import multiprocessing
+
 def find_position(flag , shape):
     for i in range(flag.shape[0] - shape[0]):
         for j in range(flag.shape[1] - shape[1]):
@@ -11,8 +13,22 @@ def find_position(flag , shape):
                     return (i,j)
     return -1
 
+def refine(components):
+    useful = list()
+    for component in components:
+        struct = np.ones((3,3),dtype=np.uint8)
+	img = cv2.dilate(1-component,struct,iterations=1)
+    	img = cv2.erode(img,struct,iterations=1)
+    	high = (img.shape[0]*img.shape[1])*0.85
+    	low = (img.shape[0]*img.shape[1])*0.15
+    	isum = (1-img).sum()
+    	if isum > low and isum < high:
+        	useful.append(component)
+    return useful
+
 def get_connected_components(img):
-    nimg = cv2.connectedComponents(1-img)[1]
+    b_img = cv2.threshold(img , 0 , 1 , cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
+    nimg = cv2.connectedComponents(1-b_img)[1]
     print("Getting the connectedComponents")
     labels = set(np.unique(nimg))
     labels.remove(0)
@@ -58,8 +74,11 @@ def extract(name):
         print("Processing "+ name)
         label = ids[name[0:-4]]
         img = cv2.imread("/home/chris/honours/hand_img/" + name , 0)
-        img = cv2.threshold(img , 0 , 1 , cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
         components = get_connected_components(img)
+        components = refine(components)
+        for component in components:
+            plt.imshow(component,'gray')
+            plt.show()
         blocks = get_text_blocks(components)
         count = 0
         print("Writing blocks")
@@ -83,9 +102,13 @@ folderlist = os.listdir(data_path)
 folderlist.sort()
 # Open the output file in write mode
 print("Starting........")
-# img = cv2.imread("test.png",0)
-# normal_img = normalize(img) * 255
-# cv2.imwrite("result.png",normal_img)
+img = cv2.imread("result.png",0)
+components = get_connected_components(img)
+components = refine(components)
+for component in components:
+    plt.imshow(component,'gray')
+    plt.show()
 
-pool = multiprocessing.Pool(4)
-pool.map(extract, folderlist)
+#
+# pool = multiprocessing.Pool(4)
+# pool.map(extract, folderlist)

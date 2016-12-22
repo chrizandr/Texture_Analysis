@@ -95,4 +95,3 @@ for name in folderlist:
             print x
         except IOError:
             print "Error at "+ name
-        

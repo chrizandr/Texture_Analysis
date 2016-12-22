@@ -1,16 +1,16 @@
 import numpy as np
-from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC
 import pdb
+
 f = open("/home/chris/honours/reduced.txt","r")
 writers = list()
 for line in f:
     writers.append(int(line))
 
-
 def classify(filename , writers):
     f = open(filename , 'r')
-    dataset = np.loadtxt(f,delimiter = ',')
-    # dataset = list()
+    raw_dataset = np.loadtxt(f,delimiter = ',')
+    dataset = list()
     for entry in raw_dataset:
         if int(entry[-1]) in writers:
             dataset.append(entry)
@@ -30,9 +30,9 @@ def classify(filename , writers):
                 train.append(dataset[i,:])
         t_train = np.array(train)
         t_test = np.array(test)
-        knn = KNeighborsClassifier()
-        knn.fit(t_train[:,0:-1],t_train[:,-1])
-        result = knn.predict(t_test[:,0:-1])
+        svm = SVC()
+        svm.fit(t_train[:,0:-1],t_train[:,-1])
+        result = svm.predict(t_test[:,0:-1])
         correct = 0
         for i in range(result.shape[0]):
             if int(result[i]) == int(t_test[i,-1]):
