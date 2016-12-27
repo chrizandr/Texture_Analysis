@@ -124,10 +124,10 @@ names3 = ["Edge/Edge_all","Edge/Edge_8","Edge/Edge_12","Edge/Edge_16","Edge/Edge
 names4 = ["LBP/LBP" , "LBP/LBP_LDA"]
 results = list()
 for data_dir in [data_dir2]:
-    for filename in names4:
+    for filename in names1+names2+names3+names4:
         print("Classifying : " + filename)
         # clsf.options = ['-K', '1', '-W', '0' , '-A' ,'weka.core.neighboursearch.KDTree -A "weka.core.EuclideanDistance -R first-last" -S weka.core.neighboursearch.kdtrees.SlidingMidPointOfWidestSide -W 0.01 -L 40 -N']
-        evl = classify(data_dir+"Edge/Edge_all"+".csv" , writers)
+        evl = classify(data_dir+filename+".csv" , writers)
         print("Evaluating")
         # ------------------------------------
         results.append((filename.split('/')[1], evl))
