@@ -7,6 +7,7 @@ import time
 
 def get_Gabor_features(name,kernels):
     img = cv2.imread(name,0)
+    img = cv2.threshold(img , 0 , 1 , cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
     features = list()
     for kernel in kernels:
         rimg = cv2.filter2D(img,cv2.CV_32F,kernel)
@@ -66,8 +67,8 @@ for name in folderlist:
             A = get_Gabor_features(img_name,kernels)
             # ------------------------------
             for feature in A:
-                f.write(str(feature)+',')
-            f.write(label)
+                f.write(str(feature * 100)+',')
+            f.write(name[0:-4] + '\n')
             print("--- %s seconds ---" % (time.time() - start_time))      # Code for time measurement
         except:                         # Log any files that have some error
             log.write(name+'\n')

@@ -62,7 +62,7 @@ for name in folderlist:
             # ------------------------------
             for feature in A:
                 f.write(str(feature)+',')
-            f.write(label)
+            f.write(name[0:-4]+'\n')
             print("--- %s seconds ---" % (time.time() - start_time))      # Code for time measurement
         # except:                         # Log any files that have some error
             # log.write(name+'\n')

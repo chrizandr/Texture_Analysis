@@ -22,9 +22,11 @@ def refine(components):
     	img = cv2.erode(img,struct,iterations=1)
     	high = (img.shape[0]*img.shape[1])*0.75
     	low = (img.shape[0]*img.shape[1])*0.25
-    	isum = (1-img).sum()
-    	if isum > low and isum < high:
+    	isum = (img).sum()
+    	if isum < high:
         	useful.append(component)
+            # plt.imshow(component,'gray')
+            # plt.show()
     return useful
 
 def get_connected_components(img):
@@ -47,28 +49,44 @@ def get_connected_components(img):
 
 def get_text_blocks(components):
     blocks = list()
-    # flag = np.zeros((300,300))
+    flag = np.zeros((300,300))
     block = np.ones((300,300)) * 255
-    x = 0
-    y = 0
     print("Getting blocks")
+    # count = 0
     for component in components:
-        # position = find_position(flag, component.shape)
-        if component.shape[0] > 300 or component.shape[1] > 300:
+        # print count
+        # count+=1
+        if component.shape[0] > 300:
             print "block left"
             continue
-        if x + component.shape[1] < 300 and y + component.shape[0] < 300:
-            block[y:y+component.shape[0]]
+        if component.shape[1] > 300:
+            iterations = (component.shape[1]/300) + 1
+            start = 0
+            end = component.shape[1] / iterations
+            for i in range(iterations):
+                t1 = component[:,start:end]
+                p1 = find_position(flag , t1.shape)
+                if p1 == -1:
+                    blocks.append(block)
+                    block = np.ones((300,300)) * 255
+                    flag = np.zeros((300,300))
+                    p1 = (0,0)
+                block[p1[0]:p1[0]+t1.shape[0] , p1[1]:p1[1]+t1.shape[1]] = t1
+                flag[p1[0]:p1[0]+t1.shape[0] , p1[1]:p1[1]+t1.shape[1]] = 1
+                start = end
+                end = end + (component.shape[1] / iterations)
+                if end > component.shape[1]:
+                    end = None
+            continue
 
-
-        #
-        # if position == -1:
-        #     blocks.append(block)
-        #     block = np.ones((300,300)) * 255
-        #     flag = np.zeros((300,300))
-        #     position = (0,0)
-        # block[position[0]:position[0]+component.shape[0] , position[1]:position[1]+component.shape[1]] = component
-        # flag[position[0]:position[0]+component.shape[0] , position[1]:position[1]+component.shape[1]] = 1
+        position = find_position(flag, component.shape)
+        if position == -1:
+            blocks.append(block)
+            block = np.ones((300,300)) * 255
+            flag = np.zeros((300,300))
+            position = (0,0)
+        block[position[0]:position[0]+component.shape[0] , position[1]:position[1]+component.shape[1]] = component
+        flag[position[0]:position[0]+component.shape[0] , position[1]:position[1]+component.shape[1]] = 1
     return blocks
 
 def get_ids():
@@ -81,44 +99,47 @@ def get_ids():
 
 def extract(name):
     ids = get_ids()
+    # ids["test"] = -1
+    writers = list()
     if name[-4:]==".png":          # Make sure that only appropriate files are processed [add 'or' conditions for other filetypes]
         print("Processing "+ name)
         label = ids[name[0:-4]]
         img = cv2.imread("/home/chris/honours/hand_img/" + name , 0)
         components = get_connected_components(img)
         components = refine(components)
-        for component in components:
-            plt.imshow(component,'gray')
-            plt.show()
         blocks = get_text_blocks(components)
         count = 0
         print("Writing blocks")
         for block in blocks:
-            x = cv2.imwrite("/home/chris/honours/text_blocks/" + name[0:-4] + str(count) + ".png" ,block * 255)
-            writers.write(name[0:-4]+str(count)+','+ label + '\n')
+            x = cv2.imwrite("/home/chris/honours/text_blocks_g/" + name[0:-4] + str(count) + ".png" ,block)
+            writers.append((name[0:-4]+str(count),label))
             count += 1
-    return None
+    return writers
 
 
 # Optional main function
 data_path = "/home/chris/honours/hand_img/"              # Path of the original dataset
-output_path = "/home/chris/honours/text_blocks/"            # Path of the output folder
-writers = open("/home/chris/honours/text_blocks/writerids.csv" , "w")
+output_path = "/home/chris/honours/text_blocks_g/"            # Path of the output folder
+writers = open("/home/chris/honours/text_blocks_g/writerids.csv" , "w")
 # Get a list of all the files in the dataset folder [data_path] and sort them alphabetically
 folderlist = os.listdir(data_path)
 folderlist.sort()
 # Open the output file in write mode
 print("Starting........")
-img = cv2.imread("test.png",0)
-components = get_connected_components(img)
-components = refine(components)
-block = get_text_blocks(components)
-pdb.set_trace()
 
-for component in components:
-    plt.imshow(component,'gray')
-    plt.show()
+# img = cv2.imread("test.png" , 0)
+# components = get_connected_components(img)
+# components = refine(components)
+# # pdb.set_trace()
+# for comp in components:
+#     plt.imshow(comp,'gray')
+#     plt.show()
+# pdb.set_trace()
+# extract("g06-042o.png")
 
-#
-# pool = multiprocessing.Pool(4)
-# pool.map(extract, folderlist)
+pool = multiprocessing.Pool(5)
+result = pool.map(extract, folderlist)
+for page in result:
+    for blocks in page:
+        writers.write(blocks[0] + blocks[1] )
+        writers.close()
