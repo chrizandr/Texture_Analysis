@@ -13,8 +13,9 @@ def get_ids(id_file):
 names1 = ["GSCM/GSCM_1","GSCM/GSCM_2","GSCM/GSCM_3","GSCM/GSCM_4","GSCM/GSCM_5","GSCM/GSCM_all"]
 names2 = ["Gabor/Gabor_all", "Gabor/Gabor_4", "Gabor/Gabor_8", "Gabor/Gabor_16", "Gabor/Gabor_32", ]
 names3 = ["Edge/Edge_all","Edge/Edge_8","Edge/Edge_12","Edge/Edge_16","Edge/Edge_dp_16",]
+names4 = ["LBP/LBP"]
 
-for filename in names1+names2+names3:
+for filename in names4:
     path = "/home/chris/honours/Texture_Analysis/data_block_csv/"
 
     f = open(path+filename+".csv",'r')
