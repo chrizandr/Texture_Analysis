@@ -1,13 +1,13 @@
 import pdb
 path = "/home/chris/honours/Texture_Analysis/data_block_csv/Edge/"
-train_file = open(path+ "Edge.csv","r")
+train_file = open(path+ "output.csv","r")
 train_data = []
 train_class = []
 for line in train_file:
 	k=line.strip()
 	k=k.split(',')
-	k = map(float,k)
-	train_data.append(k[0:-1])
+	ky = map(float,k[0:-1])
+	train_data.append(ky)
 	train_class.append(k[-1])
 train_file.close()
 Edge_8 = []
@@ -20,10 +20,10 @@ for i in range(len(train_data)):
 	Edge_12.append(train_data[i][8:20])
 	Edge_16.append(train_data[i][20:36])
 	Edge_dp_16.append(train_data[i][36:51])
-	Edge_8[i].append(int(train_class[i]))
-	Edge_12[i].append(int(train_class[i]))
-	Edge_16[i].append(int(train_class[i]))
-	Edge_dp_16[i].append(int(train_class[i]))
+	Edge_8[i].append(train_class[i])
+	Edge_12[i].append(train_class[i])
+	Edge_16[i].append(train_class[i])
+	Edge_dp_16[i].append(train_class[i])
 
 data_list =[]
 data_list.append(Edge_8)
@@ -46,5 +46,5 @@ f = open("Edge_all.csv","w")
 for i in range(len(train_data)):
 	for data in train_data[i]:
 		f.write(str(data)+',')
-	f.write(str(int(train_class[i]))+'\n')
+	f.write(str(train_class[i])+'\n')
 f.close()

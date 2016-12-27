@@ -17,13 +17,14 @@ def feature_set(img_name):
     img = cv2.imread(img_name,0)
     m = img.shape[0]
     n = img.shape[1]
-    img= local_binary_pattern(img,8,1,'uniform')
-    img=img.astype(np.uint8)
-    pdb.set_trace()
+    img = local_binary_pattern(img,8,1,'default')
+    # pdb.set_trace()
+	img = img.astype(np.uint8)
     feature=[0 for i in range(0,256)]
     for i in range(0,m):
         for j in range(0,n):
             feature[img[i,j]]+=1
     return feature
 
-feature_set("test.png")
+fet = feature_set("test2.png")
+pdb.set_trace()
