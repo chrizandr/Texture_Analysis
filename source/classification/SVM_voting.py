@@ -95,7 +95,7 @@ def classify(filename , writers):
     data , tags = load_data(filename)
     ids = get_ids("/home/chris/honours/Texture_Analysis/writerids.csv")
     final = list()
-    for i in range(2):
+    for i in range(10):
         train_data , train_class , test_data = divide_data(data , tags)
         train_data = np.array(train_data)
         train_class = np.array(train_class)
