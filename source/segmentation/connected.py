@@ -90,9 +90,10 @@ def get_text_blocks(components):
     return blocks
 
 def get_ids():
-    f = open("/home/chris/honours/Texture_Analysis/writerids.csv","r")
+    f = open("/home/chris/honours/bangla_seg/writerids.csv","r")
     dictionary = dict()
     for line in f:
+        line = line.strip()
         line = line.split(",")
         dictionary[line[0]] = line[1]
     return dictionary
@@ -101,31 +102,34 @@ def extract(name):
     ids = get_ids()
     # ids["test"] = -1
     writers = list()
-    if name[-4:]==".png":          # Make sure that only appropriate files are processed [add 'or' conditions for other filetypes]
+    if name[-4:]==".tif":          # Make sure that only appropriate files are processed [add 'or' conditions for other filetypes]
         print("Processing "+ name)
         label = ids[name[0:-4]]
-        img = cv2.imread("/home/chris/honours/hand_img/" + name , 0)
+        img = cv2.imread("/home/chris/honours/bangla_seg/" + name , 0)
         components = get_connected_components(img)
         components = refine(components)
         blocks = get_text_blocks(components)
         count = 0
         print("Writing blocks")
         for block in blocks:
-            x = cv2.imwrite("/home/chris/honours/text_blocks_g/" + name[0:-4] + str(count) + ".png" ,block)
+            x = cv2.imwrite("/home/chris/honours/bangla_blocks/" + name[0:-4] + str(count) + ".tif" ,block)
             writers.append((name[0:-4]+str(count),label))
             count += 1
     return writers
 
 
 # Optional main function
-data_path = "/home/chris/honours/hand_img/"              # Path of the original dataset
-output_path = "/home/chris/honours/text_blocks_g/"            # Path of the output folder
-writers = open("/home/chris/honours/text_blocks_g/writerids.csv" , "w")
+data_path = "/home/chris/honours/bangla_seg/"              # Path of the original dataset
+output_path = "/home/chris/honours/bangla_blocks/"            # Path of the output folder
+writers = open("/home/chris/honours/bangla_blocks/writerids.csv" , "w")
 # Get a list of all the files in the dataset folder [data_path] and sort them alphabetically
 folderlist = os.listdir(data_path)
+folderlist.remove("writerids.csv")
 folderlist.sort()
+# pdb.set_trace()
 # Open the output file in write mode
 print("Starting........")
+
 
 # img = cv2.imread("test.png" , 0)
 # components = get_connected_components(img)

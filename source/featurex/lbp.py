@@ -48,7 +48,7 @@ def get_ids(id_file):
 def extract(name):
 	global data_path
 	# Loop over the files in the dataset
-	if name[-4:]=='.png':     # Make sure that only appropriate files are processed [add 'or' conditions for other filetypes]
+	if name[-4:]=='.tif':     # Make sure that only appropriate files are processed [add 'or' conditions for other filetypes]
 
 		print("Processing "+ name)
         img_name = data_path + name
@@ -57,7 +57,7 @@ def extract(name):
 	return (A , name)
 
 
-data_path = "/home/chris/honours/text_blocks/"
+data_path = "/home/chris/honours/bangla_blocks/"
 output_file ="output.csv"
 # Give the path of the file conataining the class labels for the images.
 # Format for the file [each new line conataining] in '.csv' format

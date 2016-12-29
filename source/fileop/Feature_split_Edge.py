@@ -1,6 +1,6 @@
 import pdb
-path = "/home/chris/honours/Texture_Analysis/data_block_csv/Edge/"
-train_file = open(path+ "output.csv","r")
+path = "/home/chris/honours/Texture_Analysis/bangla_block/Edge/"
+train_file = open(path+ "Edge.csv","r")
 train_data = []
 train_class = []
 for line in train_file:

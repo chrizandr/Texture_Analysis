@@ -11,11 +11,13 @@ def segment_text(img , gimg):
     padding = 50
     neigbourhood = 100
     # Cutting out the printed region. Vertical projections of mid-point neigbourhood has local minima
-    img = img[:,padding:img.shape[1]-padding/2]
-    gimg = gimg[:,padding:gimg.shape[1]-padding/2]
+    proj = projection(img[(3*img.shape[0])/4:(3*img.shape[0])/4 + neigbourhood,:],2)
+    start,end = cluster((proj==0).nonzero()[1] , 2)
+    img = img[:,start:end]
+    gimg = gimg[:,start:end]
     mid = int(img.shape[1]/2)
     proj = projection(img[:,mid-neigbourhood:mid+neigbourhood],1)
-    start,end = cluster3((proj==0).nonzero()[1])
+    start,end = cluster((proj==0).nonzero()[1],3)
     seg_img = gimg[start:end,:]
     return seg_img
     # ---------------------
@@ -78,40 +80,54 @@ def gradient(vector):
     # ------------------------------------
     return grad
 
-def cluster3(array):
+def cluster(array,clusters):
     # ------------------------------------
     # Need to cluster the given set of values into three regions and return the mid region co-ordinates
-    threshold = 50          # The minimum distance between the regions
+    threshold = 150          # The minimum distance between the regions
     padding = 20            # Extra padding for the middle region
     # Calculating the gradient of points and finding all points where difference is greater than threshold
     cords = (gradient(array)>threshold).nonzero()[0]
     # Storing the co-ordinates for the middle region
-    start_col = array[cords[0]+1] + padding
-    end_col = array[cords[1]+1] - padding
+    if clusters == 3:
+        start_col = array[cords[1]] + padding
+        end_col = array[cords[1]+1] - padding
+    elif clusters == 2:
+        if len(cords)!=0:
+            start_col = array[cords[0]] + padding
+            end_col = array[cords[0]+1] - padding
+        else:
+            start_col = 0 + padding
+            end_col = array[cords[0]] - padding
     # ------------------------------------
     return start_col,end_col
 
 # --------------------------------------------
 
 
-data_path = "/home/chris/honours/fullimg/"              # Path of the original dataset
-output_path = "/home/chris/honours/hand_img/"            # Path of the output folder
+data_path = "/home/chris/honours/bangla_page/"              # Path of the original dataset
+output_path = "/home/chris/honours/bangla_seg/"            # Path of the output folder
 # Get a list of all the files in the dataset folder [data_path] and sort them alphabetically
 folderlist = os.listdir(data_path)
 folderlist.sort()
 log = open("normalize.log","w")
 # Open the output file in write mode
 print("Starting........")
-# img = cv2.imread("test.png",0)
-# normal_img = normalize(img) * 255
-# cv2.imwrite("result.png",normal_img)
+# img = cv2.imread("bangla_test.tif",0)
+# b_img = cv2.threshold(img , 0 , 1 , cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
+# nimg = segment_text(b_img, img)
+# pdb.set_trace()
+
+
 for name in folderlist:
-    if name[-4:]==".png":          # Make sure that only appropriate files are processed [add 'or' conditions for other filetypes]
-        # try:
-        print("Processing "+ name)
-        img = cv2.imread(data_path + name , 0)
-        b_img = cv2.threshold(img , 0 , 1 , cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
-        nimg = segment_text(b_img, img)
-        filename = output_path + name
-        x = cv2.imwrite(filename , nimg)
+    if name[-4:]==".tif":          # Make sure that only appropriate files are processed [add 'or' conditions for other filetypes]
+        try:
+            print("Processing "+ name)
+            img = cv2.imread(data_path + name , 0)
+            b_img = cv2.threshold(img , 0 , 1 , cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
+            nimg = segment_text(b_img, img)
+            filename = output_path + name
+            x = cv2.imwrite(filename , nimg)
+        except:
+
+            log.write(name+'\n')
 log.close()

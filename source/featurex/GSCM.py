@@ -33,12 +33,12 @@ def feature_set(name,distances,angles):
             features.append(x[1,0,d,theta])
             features.append(x[1,1,d,theta])
     return features
-data_path = "/home/chris/honours/text_blocks/"
+data_path = "/home/chris/honours/bangla_blocks/"
 output_file ="output.csv"
 # Give the path of the file conataining the class labels for the images.
 # Format for the file [each new line conataining] in '.csv' format
 # <filename[without the file extension]>,<classlabel>
-class_labels = "/home/chris/honours/text_blocks/writerids.csv"
+class_labels = "/home/chris/honours/bangla_blocks/writerids.csv"
 # Construct a dictionary out of the given file
 labels = get_ids(class_labels)
 # Get a list of all the files in teh dataset folder [data_path] and sort them alphabetically
@@ -49,11 +49,9 @@ f = open(output_file,"w")
 log = open("featurex.log","w")
 # Loop over the files in the dataset
 for name in folderlist:
-    if name[-4:]=='.png':     # Make sure that only appropriate files are processed [add 'or' conditions for other filetypes]
+    if name[-4:]=='.tif':     # Make sure that only appropriate files are processed [add 'or' conditions for other filetypes]
         # try:
             print("Processing "+ name)
-
-            label = labels[name[0:-4]]
 
             start_time = time.time()          # Code for time measurement
             img_name = data_path + name
