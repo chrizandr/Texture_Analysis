@@ -82,7 +82,7 @@ GSCM_all_LDA  :  65.0427350427  ,  44.0170940171
 Done with new grayscale blocks
 8886 blocks for 134 writers
 ---------------------------------------------------
-        FOR 134 writers - SVM Classifier(one cyle)|
+        FOR 134 writers - SVM Classifier(one fold)|
 ---------------------------------------------------
 Feature       |     Block      |
 --------------------------------
@@ -122,7 +122,7 @@ LBP           :  0.746268656716
 LBP_LDA       :  83.2089552239
 
 ---------------------------------------------------
-        FOR 134 writers - SVM Classifier(ten cyle)|
+        FOR 134 writers - SVM Classifier(ten fold)|
 ---------------------------------------------------
 Feature       |     Block      |
 --------------------------------
@@ -163,7 +163,7 @@ LBP_LDA       :  82.9850746269
 
 Bangla Dataset (Umapada sir)
 ---------------------------------------------------
-        FOR 13 writers - SVM Classifier(ten cyle) |
+        FOR 13 writers - SVM Classifier(ten fold) |
 ---------------------------------------------------
 Feature       |     Block      |
 --------------------------------

@@ -25,8 +25,6 @@ def refine(components):
     	isum = (img).sum()
     	if isum < high:
         	useful.append(component)
-            # plt.imshow(component,'gray')
-            # plt.show()
     return useful
 
 def get_connected_components(img):
@@ -52,10 +50,7 @@ def get_text_blocks(components):
     flag = np.zeros((300,300))
     block = np.ones((300,300)) * 255
     print("Getting blocks")
-    # count = 0
     for component in components:
-        # print count
-        # count+=1
         if component.shape[0] > 300:
             print "block left"
             continue
