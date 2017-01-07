@@ -8,23 +8,16 @@ from scipy import ndimage
 import math
 
 def projection(a,flag):
-    # ------------------------------------
-    # Projecting the image on the horizontal or vertical axis by multiplying with vector of 1's
     nrows,ncols = a.shape
     ver_filter = np.ones((ncols,1))
     hor_filter = np.ones((1,nrows))
-    # ----------------------
-    # vertical projection, the array needs to be transposed to make it into a vector
     if flag==1 :
         proj = np.dot(a,ver_filter)
         proj = proj.T
         # Dimensions : 1 x nrows
-    # ----------------------
-    # horizontal projection, the array is already in the for of a vector
     elif flag==2 :
         proj = np.dot(hor_filter,a)
         # Dimensions : 1 x ncols
-    # ------------------------------------
     return proj
 
 def strip_white(img):
@@ -33,7 +26,6 @@ def strip_white(img):
     proj = projection(img,1)
     cords = (proj!=255*n).nonzero()
     return img[cords[1][0]:cords[1][-1]+1 , :]
-
 
 def get_connected_components(img):
     b_img = cv2.threshold(img , 0 , 1 , cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
@@ -54,7 +46,6 @@ def get_connected_components(img):
     return components
 
 def refine(components):
-    print("Getting the strong components")
     useful = list()
     for component in components:
         comp = cv2.threshold(component , 0 , 1 , cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
@@ -69,7 +60,6 @@ def refine(components):
     return useful
 
 def get_base_texture(components , max_height):
-    print("Getting the base texture")
     constant_x = 0
     blocks =list()
     for each in components:
@@ -82,57 +72,49 @@ def get_base_texture(components , max_height):
     return strip_white(blocks[0])
 
 def get_blocks(base, shape):
+    print ("Getting the blocks")
     blocks = list()
-    texture_height, texture_width = base.shape
     lines = list()
+    height , width = shape
     index = 0
-    while index + width < texture_width:
-        lines.append(texture[:, index : index+width ])
+    while index + width < base.shape[1]:
+        lines.append(base[:, index : index+width ])
         index += width
-    block=np.ones(shape) * 255
-    k = 0
-    y = int(texture_height/2)
-    for line in lines:
-        if k+texture_height < shape[0]:
-            block[k:k+texture_height,:]=np.logical_and(line,block[k:k+texture_height,:])
-            k+=y
-        else:
-            blocks.append(block)
-            k = 0
-    for each in blocks:
-        plt.imshow(each,'gray')
-        plt.show()
+    lines = [strip_white(x) for x in lines]
+    block = lines[0]
+    for i in range(1,len(lines)):
+        block = np.concatenate((block,lines[i]),axis = 0)
+    index = 0
+    while index + height < block.shape[0]:
+        blocks.append(block[index : index+height, : ])
+        index += height
     return blocks
 
-img = cv2.imread("test.png", 0)
-# img = cv2.threshold(img , 0 , 1 , cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
-components = get_connected_components(img)
-components = refine(components)
-baseTexture = get_base_texture(components , img.shape[0])
-blocks  = get_blocks(baseTexture , (300,300))
+def extract(name):
+    # ids["test"] = -1
+    writers = list()
+    if name[-4:]==".png":          # Make sure that only appropriate files are processed [add 'or' conditions for other filetypes]
+        print("Processing "+ name)
+        img = cv2.imread("/home/chris/honours/IAM_hand/" + name, 0)
+        b_img = 1 - cv2.threshold(img , 0 , 1 , cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
+        img = 255 - (b_img * (255 - img))
+        components = get_connected_components(img)
+        components = refine(components)
+        baseTexture = get_base_texture(components , img.shape[0])
+        blocks  = get_blocks(baseTexture , (300,300))
+        count = 0
+        print("Writing blocks")
+        for block in blocks:
+            x = cv2.imwrite("/home/chris/honours/IAM_block/" + name[0:-4] + '_' + str(count) + ".png" ,block)
+            count += 1
+    return writers
 
+data_path = "/home/chris/honours/IAM_hand/"              # Path of the original dataset
+output_path = "/home/chris/honours/IAM_block/"            # Path of the output folder
+writers = open("/home/chris/honours/IAM_block/writerids.csv" , "w")
+folderlist = os.listdir(data_path)
+# folderlist.remove("writerids.csv")
+folderlist.sort()
 
-
-
-
-
-
-
-'''
-for each in components:
-    m,n = each.shape
-    new_img = np.zeros((m,n,3))
-    new_img[:,:,0] = each.copy()
-    new_img[:,:,1] = each.copy()
-    new_img[:,:,2] = each.copy()
-    cm = ndimage.measurements.center_of_mass(each)
-    cmx = math.floor(cm[0])
-    cmy = math.floor(cm[1])
-    print cmx,cmy
-    new_img[cmx,cmy,0] = 12
-    new_img[cmx,cmy,1] = 100
-    new_img[cmx,cmy,2] = 100
-    print m-cmy
-    plt.imshow(new_img)
-    plt.show()
-'''
+pool = multiprocessing.Pool(5)
+result = pool.map(extract, folderlist)
