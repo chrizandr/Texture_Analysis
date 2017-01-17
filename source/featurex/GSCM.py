@@ -33,8 +33,8 @@ def feature_set(name,distances,angles):
             features.append(x[1,0,d,theta])
             features.append(x[1,1,d,theta])
     return features
-data_path = "/home/chris/honours/bangla_blocks/"
-output_file ="output.csv"
+data_path = "/home/chris/honours/IAM_block/"
+output_file ="GCSM.csv"
 # Give the path of the file conataining the class labels for the images.
 # Format for the file [each new line conataining] in '.csv' format
 # <filename[without the file extension]>,<classlabel>
@@ -49,14 +49,14 @@ f = open(output_file,"w")
 log = open("featurex.log","w")
 # Loop over the files in the dataset
 for name in folderlist:
-    if name[-4:]=='.tif':     # Make sure that only appropriate files are processed [add 'or' conditions for other filetypes]
+    if name[-4:]=='.png':     # Make sure that only appropriate files are processed [add 'or' conditions for other filetypes]
         # try:
             print("Processing "+ name)
 
             start_time = time.time()          # Code for time measurement
             img_name = data_path + name
             # ------------------------------ The feature set function from the appropriately imported feature source is used.
-            A = feature_set(img_name,distances,angles)
+            A = feature_set(img_name)
             # ------------------------------
             for feature in A:
                 f.write(str(feature)+',')

@@ -57,8 +57,8 @@ def extract(name):
 	return (A , name)
 
 
-data_path = "/home/chris/honours/bangla_blocks/"
-output_file ="output.csv"
+data_path = "/home/chris/honours/IAM_block/"
+output_file ="LBP.csv"
 # Give the path of the file conataining the class labels for the images.
 # Format for the file [each new line conataining] in '.csv' format
 # <filename[without the file extension]>,<classlabel>

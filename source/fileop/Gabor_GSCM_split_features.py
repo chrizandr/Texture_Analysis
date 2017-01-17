@@ -1,7 +1,7 @@
 #----------------------------------------------------------------
-# Gabor_path = "/home/chris/honours/Texture_Analysis/bangla_block/Gabor/"
-GSCM_path = "/home/chris/honours/Texture_Analysis/bangla_block/GSCM/"
-train_file = open(GSCM_path + "GSCM.csv","r")
+Gabor_path = "/home/chris/honours/Texture_Analysis/data_block_csv/Gabor/"
+GSCM_path = "/home/chris/honours/Texture_Analysis/data_block_csv/GSCM/"
+train_file = open(GSCM_path + "GCSM.csv","r")
 train_data = []
 train_class = []
 for line in train_file:
@@ -28,7 +28,7 @@ GSCM_all = file(GSCM_path + "GSCM_all.csv","w")
 #----------------------------------------------------------------
 for i in range(len(train_data)):
     label = str(train_class[i])
-	#
+	# #
     # for data in train_data[i][0:32]:
     #     Gabor_all.write(str(data)+',')
     # Gabor_all.write(label+'\n')

@@ -40,7 +40,7 @@ frequencies = [4,8,16,32]       # The scales of the different Gabor filters to b
 angles = [0,45,90,135]
 # ------------------------------
 kernels = make_Gabor_kernels(sigma,angles,frequencies)
-data_path = "/home/chris/honours/bangla_blocks/"
+data_path = "/home/chris/honours/IAM_block/"
 output_file ="Gabor.csv"
 # Give the path of the file conataining the class labels for the images.
 # Format for the file [each new line conataining] in '.csv' format
@@ -56,8 +56,8 @@ f = open(output_file,"w")
 log = open("featurex.log","w")
 # Loop over the files in the dataset
 for name in folderlist:
-    if name[-4:]=='.tif':     # Make sure that only appropriate files are processed [add 'or' conditions for other filetypes]
-        try:
+    if name[-4:]=='.png':     # Make sure that only appropriate files are processed [add 'or' conditions for other filetypes]
+        # try:
             print("Processing "+ name)
 
             start_time = time.time()          # Code for time measurement
@@ -69,8 +69,8 @@ for name in folderlist:
                 f.write(str(feature * 100)+',')
             f.write(name[0:-4] + '\n')
             print("--- %s seconds ---" % (time.time() - start_time))      # Code for time measurement
-        except:                         # Log any files that have some error
-            log.write(name+'\n')
+        # except:                         # Log any files that have some error
+        #     log.write(name+'\n')
 log.close()
 f.close()
 

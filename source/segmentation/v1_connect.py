@@ -116,5 +116,5 @@ folderlist = os.listdir(data_path)
 # folderlist.remove("writerids.csv")
 folderlist.sort()
 
-pool = multiprocessing.Pool(5)
+pool = multiprocessing.Pool(6)
 result = pool.map(extract, folderlist)

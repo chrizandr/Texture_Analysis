@@ -93,7 +93,7 @@ def get_blocks(data , tags , test_tags):
 # Clasiification done using a voting based SVM method
 def classify(filename , writers):
     data , tags = load_data(filename)
-    ids = get_ids("/home/chris/honours/bangla_seg/writerids.csv")
+    ids = get_ids("/home/chris/honours/Texture_Analysis/writerids.csv")
     final = list()
     for i in range(1):
         train_data , train_class , test_data = divide_data(data , tags)

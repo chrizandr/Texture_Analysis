@@ -5,14 +5,6 @@ from random import shuffle
 from collections import Counter
 # -----------------------------------------------------
 
-# Getting a list of all the valid writers. Only those in the list will be used.
-f = open("/home/chris/honours/reduced.txt","r")
-writers = list()
-for line in f:
-    writers.append(int(line))
-
-# -----------------------------------------------------
-
 def match(tag , names):
     for i in range(0,3):
         try:
@@ -41,11 +33,9 @@ def load_data(filename):
     f = open(filename , 'r')
     data = list()
     filename = list()
-    ids = get_ids("/home/chris/honours/bangla_blocks/writerids.csv")
     for line in f:
         l = line.strip()
         l = l.split(',')
-        # if int(ids[l[-1]]) in writers:
         data.append([float(x) for x in l[0:-1]])
         filename.append(l[-1])
     return np.array(data) , filename
@@ -54,7 +44,7 @@ def load_data(filename):
 
 # Divides the data into training and testing. Divides the pages. Later used to divide the blocks
 def divide_data(data , tags):
-    files = get_ids("/home/chris/honours/bangla_seg/writerids.csv")
+    files = get_ids("/home/chris/honours/Texture_Analysis/writerids.csv")
     test_tags = list()
     done = list()
     fil = [x for x in files.iterkeys()]
@@ -73,7 +63,7 @@ def get_blocks(data , tags , test_tags):
     names = dict()
     train_data = list()
     train_class = list()
-    ids = get_ids("/home/chris/honours/bangla_blocks/writerids.csv")
+    ids = get_ids("/home/chris/honours/Texture_Analysis/writerids.csv")
     for tag in test_tags:
         test_data[tag] = list()
         names[tag] = None
@@ -85,7 +75,7 @@ def get_blocks(data , tags , test_tags):
             count +=1
         else:
             train_data.append(data[i])
-            train_class.append(int(ids[tags[i]]))
+            train_class.append(int(ids[tags[i].split('_')[0]]))
     return train_data, train_class , test_data
 
 # -----------------------------------------------------

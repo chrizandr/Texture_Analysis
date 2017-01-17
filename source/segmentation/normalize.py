@@ -9,7 +9,7 @@ import pdb
 import segment
 # ------------------------------------------
 def normalize(img):
-    # -------------------------
+	# -------------------------
     # Convert the image into a binary image using Otsu thresholding
     ret, img = cv2.threshold(img , 0 , 1 , cv2.THRESH_BINARY + cv2.THRESH_OTSU)
     # Segment the handwritten part from the image
