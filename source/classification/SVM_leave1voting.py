@@ -1,5 +1,6 @@
 import numpy as np
 from sklearn.svm import SVC
+from sklearn.neighbors import KNeighborsClassifier
 import pdb
 from random import shuffle
 from collections import Counter
@@ -90,7 +91,8 @@ def classify(filename):
         train_data , train_class , test_data = divide_data(data , tags)
         train_data = np.array(train_data)
         train_class = np.array(train_class)
-        svm = SVC()
+        pdb.set_trace()
+        svm = KNeighborsClassifier()
         svm.fit(train_data , train_class)
         correct = 0
         for page in test_data.iterkeys():

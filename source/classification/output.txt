@@ -80,7 +80,7 @@ GSCM_all_LDA  :  65.0427350427  ,  44.0170940171
 ---------------------------------------------------
 
 Done with new grayscale blocks
-8886 blocks for 134 writers
+8886 blocks for 134 writers(more than average number of blocks)
 ---------------------------------------------------
         FOR 134 writers - SVM Classifier(one fold)|
 ---------------------------------------------------
@@ -202,6 +202,7 @@ Edge_dp_16_LDA:   100.0
 LBP           :   8.33333333333
 LBP_LDA       :   100.0
 
+New blocks - SVM voting (10)
 GSCM_1  :  0.332225913621
 GSCM_2  :  0.332225913621
 GSCM_3  :  0.332225913621
@@ -227,3 +228,28 @@ Gabor_32_LDA  :  21.9601328904
 LBP  :  0.332225913621
 LBP_LDA  :  51.096345515
 
+New blocks - KNN voting (10)
+GSCM_1 : 6.3122923588
+GSCM_2 : 6.87707641196
+GSCM_3 : 7.14285714286
+GSCM_4 : 7.47508305648
+GSCM_5 : 6.21262458472
+GSCM_all : 10.5315614618
+GSCM_1_LDA : 6.77740863787
+GSCM_2_LDA : 6.21262458472
+GSCM_3_LDA : 6.37873754153
+GSCM_4_LDA : 7.07641196013
+GSCM_5_LDA : 6.17940199336
+GSCM_all_LDA : 21.3953488372
+Gabor_all : 40.0664451827
+Gabor_4 : 30.0996677741
+Gabor_8 : 24.584717608
+Gabor_16 : 22.9568106312
+Gabor_32 : 22.292358804
+Gabor_all_LDA : 69.1029900332
+Gabor_4_LDA : 28.4717607973
+Gabor_8_LDA : 28.438538206
+Gabor_16_LDA : 24.0531561462
+Gabor_32_LDA : 18.4053156146
+LBP : 49.7674418605
+LBP_LDA : 49.26910299

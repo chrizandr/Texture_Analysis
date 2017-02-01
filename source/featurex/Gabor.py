@@ -40,12 +40,12 @@ frequencies = [4,8,16,32]       # The scales of the different Gabor filters to b
 angles = [0,45,90,135]
 # ------------------------------
 kernels = make_Gabor_kernels(sigma,angles,frequencies)
-data_path = "/home/chris/honours/IAM_block/"
+data_path = "/home/chris/telugu_hand/"
 output_file ="Gabor.csv"
 # Give the path of the file conataining the class labels for the images.
 # Format for the file [each new line conataining] in '.csv' format
 # <filename[without the file extension]>,<classlabel>
-class_labels = "/home/chris/honours/bangla_seg/writerids.csv"
+class_labels = "/home/chris/telugu/writerids.csv"
 # Construct a dictionary out of the given file
 labels = get_ids(class_labels)
 # Get a list of all the files in teh dataset folder [data_path] and sort them alphabetically
