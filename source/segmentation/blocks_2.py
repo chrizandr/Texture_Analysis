@@ -6,6 +6,7 @@ import os
 import multiprocessing
 from scipy import ndimage
 import math
+from blocks import *
 
 def projection(a,flag):
     nrows,ncols = a.shape
@@ -20,46 +21,7 @@ def projection(a,flag):
         # Dimensions : 1 x ncols
     return proj
 
-def strip_white(img):
-    m,n = img.shape
-    flag = 1
-    proj = projection(img,1)
-    cords = (proj!=255*n).nonzero()
-    return img[cords[1][0]:cords[1][-1]+1 , :]
-
-def get_connected_components(img):
-    b_img = cv2.threshold(img , 0 , 1 , cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
-    nimg = cv2.connectedComponents(1-b_img)[1]
-    print("Getting the connectedComponents")
-    labels = set(np.unique(nimg))
-    labels.remove(0)
-    components = list()
-    for label in labels:
-        sub_region = (nimg==label).nonzero()
-        max_hor = sub_region[1].max()
-        min_hor = sub_region[1].min()
-        max_ver = sub_region[0].max()
-        min_ver = sub_region[0].min()
-        region = img[min_ver : max_ver, min_hor :max_hor]
-        if max_hor - min_hor > 3 and max_ver - min_ver > 3:
-            components.append(region)
-    return components
-
-def refine(components):
-    useful = list()
-    for component in components:
-        comp = cv2.threshold(component , 0 , 1 , cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
-        struct = np.ones((3,3),dtype=np.uint8)
-        img = cv2.dilate(1-comp,struct,iterations=1)
-    	img = cv2.erode(img,struct,iterations=1)
-    	high = (img.shape[0]*img.shape[1])*0.75
-    	low = (img.shape[0]*img.shape[1])*0.25
-    	isum = (img).sum()
-    	if isum < high:
-        	useful.append(component)
-    return useful
-
-def get_base_texture(components , max_height):
+def get_base_texture(components , max_height , shape):
     constant_x = 0
     blocks =list()
     for each in components:

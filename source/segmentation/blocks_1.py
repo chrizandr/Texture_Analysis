@@ -4,6 +4,7 @@ import pdb
 import numpy as np
 import os
 import multiprocessing
+from blocks import *
 
 def find_position(flag , shape):
     for i in range(flag.shape[0] - shape[0]):
@@ -12,38 +13,6 @@ def find_position(flag , shape):
                 if 1 not in flag[ i : i+shape[0] , j : j+shape[1] ]:
                     return (i,j)
     return -1
-
-def refine(components):
-    useful = list()
-    for component in components:
-        comp = cv2.threshold(component , 0 , 1 , cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
-        struct = np.ones((3,3),dtype=np.uint8)
-        img = cv2.dilate(1-comp,struct,iterations=1)
-    	img = cv2.erode(img,struct,iterations=1)
-    	high = (img.shape[0]*img.shape[1])*0.75
-    	low = (img.shape[0]*img.shape[1])*0.25
-    	isum = (img).sum()
-    	if isum < high:
-        	useful.append(component)
-    return useful
-
-def get_connected_components(img):
-    b_img = cv2.threshold(img , 0 , 1 , cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
-    nimg = cv2.connectedComponents(1-b_img)[1]
-    print("Getting the connectedComponents")
-    labels = set(np.unique(nimg))
-    labels.remove(0)
-    components = list()
-    for label in labels:
-        sub_region = (nimg==label).nonzero()
-        max_hor = sub_region[1].max()
-        min_hor = sub_region[1].min()
-        max_ver = sub_region[0].max()
-        min_ver = sub_region[0].min()
-        region = img[min_ver : max_ver, min_hor :max_hor]
-        if max_hor - min_hor > 3 and max_ver - min_ver > 3:
-            components.append(region)
-    return components
 
 def get_text_blocks(components):
     blocks = list()
