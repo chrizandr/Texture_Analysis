@@ -1,7 +1,10 @@
 import numpy as np
 import cv2
 from scipy import ndimage
-
+from skimage.feature import local_binary_pattern
+from sklearn.metrics.pairwise import cosine_similarity
+import matplotlib.pyplot as plt
+import pdb
 def get_ids(name):
     f = open(name,"r")
     dictionary = dict()
@@ -59,3 +62,41 @@ def strip_white(img):
     proj = np.sum(img, axis = 1)
     cords = (proj != (255*n) ).nonzero()
     return img[cords[0][0]:cords[0][-1]+1 , :]
+
+def feature_set(img):
+    m = img.shape[0]
+    n = img.shape[1]
+    img = local_binary_pattern(img,8,1,'default')
+    img = img.astype(np.uint8)
+    feature=[0 for i in range(0,256)]
+    for i in range(0,m):
+        for j in range(0,n):
+            feature[img[i,j]]+=1
+    return feature
+
+def refine2(components , img):
+    # Finding global feature image
+    f = np.array(feature_set(img))
+
+    # Finding feature for each of the connectedComponents
+    feature = list()
+    for comp in components:
+        feature.append(feature_set(comp))
+    feature = np.array(feature)
+
+    # Calculating cosine_similarity with the global feature
+    similarity = list()
+    for i in range(feature.shape[0]):
+        similarity.append((cosine_similarity( feature[i].reshape((1,-1)) , f.reshape((1,-1)) )[0][0]  , components[i] ))
+
+    # Sorting based on similarity
+    similarity = sorted(similarity, key=lambda tup: tup[0] , reverse=True)
+
+    # Separating similarity and components
+    values = [x[0] for x in similarity]
+    comps = [x[1] for x in similarity]
+
+    # Thresholding based on similarity
+    index = (np.array()>0.3).nonzero()[0][-1] + 1
+
+    return components[0:index]
