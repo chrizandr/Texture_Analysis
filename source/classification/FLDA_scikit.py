@@ -14,9 +14,9 @@ names1 = ["GSCM/GSCM_1","GSCM/GSCM_2","GSCM/GSCM_3","GSCM/GSCM_4","GSCM/GSCM_5",
 names2 = ["Gabor/Gabor_all", "Gabor/Gabor_4", "Gabor/Gabor_8", "Gabor/Gabor_16", "Gabor/Gabor_32", ]
 names3 = ["Edge/Edge_all","Edge/Edge_8","Edge/Edge_12","Edge/Edge_16","Edge/Edge_dp_16",]
 names4 = ["LBP/LBP"]
-
-for filename in names1 + names2 + names4:
-    path = "/home/chris/honours/Texture_Analysis/data_block_csv/"
+names = ["LBP3","LBP4","LBP5","LBP6","LBP7",]
+for filename in names:
+    path = "/home/chris/honours/Texture_Analysis/source/featurex/"
 
     f = open(path+filename+".csv",'r')
     train_data = list()
@@ -28,8 +28,8 @@ for filename in names1 + names2 + names4:
         train_data.append(ly)
         train_class.append(l[-1])
     f.close()
-    ids = get_ids("/home/chris/honours/Texture_Analysis/writerids.csv")
-    tr_class = [ids[x.split('_')[0]] for x in train_class]
+    ids = get_ids("/home/chris/writerids.csv")
+    tr_class = [ids[x.split('-')[0]+'-'+x.split('-')[1] + '.png'] for x in train_class]
     clf = LDA()
     trans = clf.fit_transform(train_data,tr_class)
     f = open(path+filename+"_LDA.csv",'w')

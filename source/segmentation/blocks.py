@@ -91,12 +91,21 @@ def refine2(components , img):
 
     # Sorting based on similarity
     similarity = sorted(similarity, key=lambda tup: tup[0] , reverse=True)
-
     # Separating similarity and components
     values = [x[0] for x in similarity]
     comps = [x[1] for x in similarity]
-
+    out = list()
     # Thresholding based on similarity
-    index = (np.array()>0.3).nonzero()[0][-1] + 1
+    index = (np.array(values)>0.3).nonzero()[0][-1] + 1
+    out.append(comps[0:index])
+    index = (np.array(values)>0.4).nonzero()[0][-1] + 1
+    out.append(comps[0:index])
+    index = (np.array(values)>0.5).nonzero()[0][-1] + 1
+    out.append(comps[0:index])
+    index = (np.array(values)>0.6).nonzero()[0][-1] + 1
+    out.append(comps[0:index])
+    index = (np.array(values)>0.7).nonzero()[0][-1] + 1
+    out.append(comps[0:index])
+    
 
-    return components[0:index]
+    return out

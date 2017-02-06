@@ -44,32 +44,30 @@ def get_base_texture(components , max_height , shape):
 
 # Path for data and output
 dataset = "/home/chris/telugu_hand/"
-output = "/home/chris/telugu_blocks/"
-# Class labels for the files
-labels = get_ids("/home/chris/telugu/writerids.csv")
 # All the files in the dataset
 files = os.listdir(dataset)
 
 def extract(name):
     # Path for data and output
     dataset = "/home/chris/telugu_hand/"
-    output = "/home/chris/telugu_blocks/"
+    output = "/home/chris/telugu_blocks"
     # Check if the files are images
     if name[-4:] == ".png":
         print("Processing image : "+ name)
         img = cv2.imread(dataset + name , 0)
         components = get_connected_components(img)
         components = refine(components,250)
-        components = refine2(components , img)
-        return components
-        # blocks =get_base_texture(components, img.shape[0], 250)
-        # print "Writing blocks"
-        # for i in range(len(blocks)):
-        #     cv2.imwrite(output + name[0:-4] + '-' + str(i) + ".png" , blocks[i])
-        # print "Done"
+        comps = refine2(components , img)
+        print "Writing blocks"
+        for components in comps:
+            blocks = get_base_texture(components, img.shape[0], 250)
+            index = comps.index(components)
+            print index,
+            for i in range(len(blocks)):
+                cv2.imwrite(output + str(3+index)+'/' + name[0:-4] + '-' + str(i) + ".png" , blocks[i])
+        print "Done"
+# extract("b-37.png")
 
-extract("c-30.png")
-
-# pool = multiprocessing.Pool(5)
-# result = pool.map(extract, files)
-# pdb.set_trace()
+pool = multiprocessing.Pool(5)
+result = pool.map(extract, files)
+pdb.set_trace()

@@ -46,7 +46,7 @@ def load_data(filename):
 
 # Divides the data into training and testing. Divides the pages. Later used to divide the blocks
 def divide_data(data , tags):
-    files = get_ids("/home/chris/honours/Texture_Analysis/writerids.csv")
+    files = get_ids("/home/chris/writerids.csv")
     test_tags = list()
     done = list()
     fil = [x for x in files.iterkeys()]
@@ -65,13 +65,13 @@ def get_blocks(data , tags , test_tags):
     names = dict()
     train_data = list()
     train_class = list()
-    ids = get_ids("/home/chris/honours/Texture_Analysis/writerids.csv")
+    ids = get_ids("/home/chris/writerids.csv")
     for tag in test_tags:
         test_data[tag] = list()
 
     count = 0
     for i in range(len(tags)):
-        tag = tags[i].split('_')[0]
+        tag = tags[i].split('-')[0] + '-' + tags[i].split('-')[1] + '.png'
         if tag in test_data:
             test_data[tag].append(data[i])
             count +=1
@@ -85,14 +85,13 @@ def get_blocks(data , tags , test_tags):
 # Clasiification done using a voting based SVM method
 def classify(filename):
     data , tags = load_data(filename)
-    ids = get_ids("/home/chris/honours/Texture_Analysis/writerids.csv")
+    ids = get_ids("/home/chris/writerids.csv")
     final = list()
     for i in range(10):
         train_data , train_class , test_data = divide_data(data , tags)
         train_data = np.array(train_data)
         train_class = np.array(train_class)
-        pdb.set_trace()
-        svm = KNeighborsClassifier()
+        svm = SVC()
         svm.fit(train_data , train_class)
         correct = 0
         for page in test_data.iterkeys():
@@ -110,18 +109,19 @@ def classify(filename):
 
 # -------------------------------------------------------------------------------__MAIN__---------------------------------------------
 # data_dir1 = "/home/chris/honours/Texture_Analysis/data_fullimg_csv/"
-data_dir2 = "/home/chris/honours/Texture_Analysis/data_block_csv/"
+data_dir2 = "/home/chris/honours/Texture_Analysis/source/featurex/"
 names1 = ["GSCM/GSCM_1","GSCM/GSCM_2","GSCM/GSCM_3","GSCM/GSCM_4","GSCM/GSCM_5","GSCM/GSCM_all","GSCM/GSCM_1_LDA","GSCM/GSCM_2_LDA","GSCM/GSCM_3_LDA","GSCM/GSCM_4_LDA","GSCM/GSCM_5_LDA","GSCM/GSCM_all_LDA"]
 names2 = ["Gabor/Gabor_all", "Gabor/Gabor_4", "Gabor/Gabor_8", "Gabor/Gabor_16", "Gabor/Gabor_32", "Gabor/Gabor_all_LDA", "Gabor/Gabor_4_LDA", "Gabor/Gabor_8_LDA", "Gabor/Gabor_16_LDA", "Gabor/Gabor_32_LDA", ]
 names3 = ["Edge/Edge_all","Edge/Edge_8","Edge/Edge_12","Edge/Edge_16","Edge/Edge_dp_16","Edge/Edge_all_LDA","Edge/Edge_8_LDA","Edge/Edge_12_LDA","Edge/Edge_16_LDA","Edge/Edge_dp_16_LDA",]
 names4 = ["LBP/LBP" , "LBP/LBP_LDA"]
+names5 = ["LBP3","LBP4","LBP5","LBP6","LBP7",]
 results = list()
 for data_dir in [data_dir2]:
-    for filename in names1+names2+names4:
+    for filename in names5:
         print("Classifying : " + filename)
         # clsf.options = ['-K', '1', '-W', '0' , '-A' ,'weka.core.neighboursearch.KDTree -A "weka.core.EuclideanDistance -R first-last" -S weka.core.neighboursearch.kdtrees.SlidingMidPointOfWidestSide -W 0.01 -L 40 -N']
         evl = classify(data_dir+filename+".csv")
         print("Evaluating")
         # ------------------------------------
-        results.append((filename.split('/')[1], evl))
+        results.append((filename, evl))
 pdb.set_trace()
