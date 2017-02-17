@@ -88,9 +88,11 @@ def classify(filename):
     ids = get_ids("/home/chris/writerids.csv")
     final = list()
     for i in range(10):
+        print "Fold",i
         train_data , train_class , test_data = divide_data(data , tags)
         train_data = np.array(train_data)
         train_class = np.array(train_class)
+        classes = sorted([i for i in test_data.iterkeys()])
         svm = SVC()
         svm.fit(train_data , train_class)
         correct = 0
@@ -103,6 +105,7 @@ def classify(filename):
             label = count.most_common()[0][0]
             if label == classid:
                 correct += 1
+        print (100 * float(correct)) / len(test_data)
         final.append((100 * float(correct)) / len(test_data))
     return sum(final)/len(final)
 
@@ -117,7 +120,7 @@ names4 = ["LBP/LBP" , "LBP/LBP_LDA"]
 names5 = ["LBP3","LBP4","LBP5","LBP6","LBP7",]
 results = list()
 for data_dir in [data_dir2]:
-    for filename in names5:
+    for filename in ["features8_LDA"]:
         print("Classifying : " + filename)
         # clsf.options = ['-K', '1', '-W', '0' , '-A' ,'weka.core.neighboursearch.KDTree -A "weka.core.EuclideanDistance -R first-last" -S weka.core.neighboursearch.kdtrees.SlidingMidPointOfWidestSide -W 0.01 -L 40 -N']
         evl = classify(data_dir+filename+".csv")

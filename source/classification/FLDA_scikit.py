@@ -15,7 +15,7 @@ names2 = ["Gabor/Gabor_all", "Gabor/Gabor_4", "Gabor/Gabor_8", "Gabor/Gabor_16",
 names3 = ["Edge/Edge_all","Edge/Edge_8","Edge/Edge_12","Edge/Edge_16","Edge/Edge_dp_16",]
 names4 = ["LBP/LBP"]
 names = ["LBP3","LBP4","LBP5","LBP6","LBP7",]
-for filename in names:
+for filename in ["features8"]:
     path = "/home/chris/honours/Texture_Analysis/source/featurex/"
 
     f = open(path+filename+".csv",'r')
