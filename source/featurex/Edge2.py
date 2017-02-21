@@ -23,16 +23,7 @@ cords16 = [[(-1,1),(-2,2)], [(-1,0),(-2,0)], [(-1,-1),(-2,-2)],
             [(0,-1),(0,-2)], [(1,-1),(2,-2)], [(1,0),(2,0)],
             [(1,1),(2,2)], [(0,1),(0,2)]]
 
-filters_8 = list()
-for cords in cords8:
-    filt = np.zeros((3,3) , dtype = np.uint8)
-    for point in cords:
-        x = point[0]
-        y = point[1]
-        filt[1,1] = 1
-        filt[(1+x),(1+y)] = 1
-    filters_8.append(filt)
-
+bank_16 = list()
 filters_16 = list()
 for cords in cords16:
     filt = np.zeros((5,5) , dtype = np.uint8)
@@ -41,27 +32,34 @@ for cords in cords16:
         y = point[1]
         filt[2,2] = 1
         filt[(2+x),(2+y)] = 1
-    filters_16.append(filt)
-pdb.set_trace()
-
-bank_8 = list()
-bank_16 = list()
-for i in filters_8:
-    for j in filters_8:
-        for k in filters_8:
-            if (i!=j).any() and (j!=k).any() and (i!=k).any():
-                bank_8.append(i+j+k)
+        filters_16.append(filt)
 
 for i in filters_16:
     for j in filters_16:
-        for k in filters_16:
+        for k in filters_16 + [np.zeros((5,5), dtype=np.uint8)]:
             if (i!=j).any() and (j!=k).any() and (i!=k).any():
-                bank_16.append(i+j+k)
+                for l in filters_16 + [np.zeros((5,5), dtype=np.uint8)]:
+                    if (l!=i).any() and (l!=j).any() and (l!=k).any():
+                        bank_16.append(i+j+k+l)
 
+bank = [bank_16[0]]
+for filt in bank_16:
+    flag = 0
+    for f in bank:
+        if (f==filt).all():
+            flag = 1
+    if not flag:
+        bank.append(filt)
 
-data_path = "/home/chris/telugu_blocks4/"
-output_file ="features8.csv"
-class_labels = "/home/chris/writerids.csv"
+# pdb.set_trace()
+for filt in bank:
+    filt[2,2] = 1
+
+print(len(bank_16))
+
+data_path = "/home/chrizandr/data//telugu_blocks4/"
+output_file ="features16.csv"
+class_labels = "/home/chrizandr/data/writerids.csv"
 
 labels = get_ids(class_labels)
 
@@ -82,7 +80,7 @@ for name in folderlist:
         img = cv2.threshold(img , 0 , 1 , cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
 
         feature = list()
-        for kernel in bank_16:
+        for kernel in bank:
             feature.append(match(img,kernel))
 
         feature = np.array(feature)
@@ -94,9 +92,5 @@ for name in folderlist:
 
 
 
-
-
 # Put all kernels and match to get the number of points matching the kernel
 # Keep all in ascending order of angles
-
-print match(img, kernel)
