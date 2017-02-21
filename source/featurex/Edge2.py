@@ -18,23 +18,46 @@ def match(img, kernel):
     return len((output[1:-1,1:-1]==kernel.sum()).nonzero()[0])
 
 cords8 = [[(-1,1)], [(-1,0)], [(-1,-1)], [(0,-1)], [(1,-1)], [(1,0)], [(1,1)], [(0,1)]]
+
+cords16 = [[(-1,1),(-2,2)], [(-1,0),(-2,0)], [(-1,-1),(-2,-2)],
+            [(0,-1),(0,-2)], [(1,-1),(2,-2)], [(1,0),(2,0)],
+            [(1,1),(2,2)], [(0,1),(0,2)]]
+
 filters_8 = list()
-filters_8.append(np.zeros((3,3), dtype = np.uint8))
 for cords in cords8:
     filt = np.zeros((3,3) , dtype = np.uint8)
     for point in cords:
         x = point[0]
         y = point[1]
+        filt[1,1] = 1
         filt[(1+x),(1+y)] = 1
     filters_8.append(filt)
 
-bank_8 = list()
+filters_16 = list()
+for cords in cords16:
+    filt = np.zeros((5,5) , dtype = np.uint8)
+    for point in cords:
+        x = point[0]
+        y = point[1]
+        filt[2,2] = 1
+        filt[(2+x),(2+y)] = 1
+    filters_16.append(filt)
+pdb.set_trace()
 
+bank_8 = list()
+bank_16 = list()
 for i in filters_8:
     for j in filters_8:
         for k in filters_8:
             if (i!=j).any() and (j!=k).any() and (i!=k).any():
                 bank_8.append(i+j+k)
+
+for i in filters_16:
+    for j in filters_16:
+        for k in filters_16:
+            if (i!=j).any() and (j!=k).any() and (i!=k).any():
+                bank_16.append(i+j+k)
+
 
 data_path = "/home/chris/telugu_blocks4/"
 output_file ="features8.csv"
@@ -59,7 +82,7 @@ for name in folderlist:
         img = cv2.threshold(img , 0 , 1 , cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
 
         feature = list()
-        for kernel in bank_8:
+        for kernel in bank_16:
             feature.append(match(img,kernel))
 
         feature = np.array(feature)

@@ -98,26 +98,34 @@ def differentiate(vect):
         new_vect[i-1] = vect[i] - vect[i-1]
     return new_vect
 
-outfolder = "/home/chris/honours/fullimg_norm/"
+outfolder = "/home/chrizandr/data/telugu_blocks4/"
+
 folderlist = os.listdir(outfolder)
-dictionary = get_ids("")
 folderlist.sort()
-f = open(outfolder+"Edge_direction.csv","w")
-print "Starting loop"
+f = open("Edge_direction.csv","w")
+
+print("Starting loop")
 for name in folderlist:
-    if len(name)!=13 and name!="writerids.csv" and name!="Edge_direction.csv":
+    if name[-4:] == '.png':
         n = name[0:-4]
-        print "Processing "+ n + ".png"
+
+        print("Processing", name)
+
         start_time = time.time()
-        img= io.imread(outfolder+n+".png");
+        img= io.imread(outfolder + name);
+
         eimg=sobel(img)
         thresh=threshold_otsu(eimg)
+
         eimg[eimg>thresh] = 1
         eimg[eimg<=thresh] = 0
+
         binary=eimg
         binary=binary.astype(int)
+
         orient8,orient12,orient16 = Edge_direction(binary)
         diff_orient16 = differentiate(orient16)
+
         for i in orient8:
             f.write(str(i)+',')
         for i in orient12:
@@ -126,8 +134,8 @@ for name in folderlist:
             f.write(str(i)+',')
         for i in diff_orient16:
             f.write(str(i)+',')
-        label = dictionary[n]
-        f.write(label)
+        f.write(n +'\n')
         print("--- %s seconds ---" % (time.time() - start_time))
-print "Done :)"
+print("Done :)")
+
 f.close()
