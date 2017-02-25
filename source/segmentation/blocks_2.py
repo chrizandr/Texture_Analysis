@@ -57,23 +57,22 @@ def extract(name):
     writers = list()
     if name[-4:]==".png":          # Make sure that only appropriate files are processed [add 'or' conditions for other filetypes]
         print("Processing "+ name)
-        img = cv2.imread("/home/chris/honours/IAM_hand/" + name, 0)
+        img = cv2.imread("/home/chrizandr/data/telugu_hand2/" + name, 0)
         b_img = 1 - cv2.threshold(img , 0 , 1 , cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
         img = 255 - (b_img * (255 - img))
         components = get_connected_components(img)
-        components = refine(components)
+        components = refine(components, 300)
         baseTexture = get_base_texture(components , img.shape[0])
         blocks  = get_blocks(baseTexture , (300,300))
         count = 0
         print("Writing blocks")
         for block in blocks:
-            x = cv2.imwrite("/home/chris/honours/IAM_block/" + name[0:-4] + '_' + str(count) + ".png" ,block)
+            x = cv2.imwrite("/home/chris/data/temp/" + name[0:-4] + '-' + str(count) + ".png" ,block)
             count += 1
     return writers
 
-data_path = "/home/chris/honours/IAM_hand/"              # Path of the original dataset
-output_path = "/home/chris/honours/IAM_block/"            # Path of the output folder
-writers = open("/home/chris/honours/IAM_block/writerids.csv" , "w")
+data_path = "/home/chrizandr/data/telugu_hand2/"              # Path of the original dataset
+output_path = "/home/chrizandr/data/temp/"            # Path of the output folder
 folderlist = os.listdir(data_path)
 # folderlist.remove("writerids.csv")
 folderlist.sort()

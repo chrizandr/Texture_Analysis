@@ -96,16 +96,9 @@ def refine2(components , img):
     comps = [x[1] for x in similarity]
     out = list()
     # Thresholding based on similarity
-    index = (np.array(values)>0.3).nonzero()[0][-1] + 1
-    out.append(comps[0:index])
+
     index = (np.array(values)>0.4).nonzero()[0][-1] + 1
     out.append(comps[0:index])
-    index = (np.array(values)>0.5).nonzero()[0][-1] + 1
-    out.append(comps[0:index])
-    index = (np.array(values)>0.6).nonzero()[0][-1] + 1
-    out.append(comps[0:index])
-    index = (np.array(values)>0.7).nonzero()[0][-1] + 1
-    out.append(comps[0:index])
-    
+
 
     return out

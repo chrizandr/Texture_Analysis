@@ -14,10 +14,10 @@ def get_ids(name):
     return dictionary
 
 # Path for the data
-dataset = "/home/chris/telugu/"
-output = "/home/chris/telugu_hand/"
+dataset = "/home/chrizandr/Documents/"
+output = "/home/chrizandr/data/telugu_hand2/"
 # Class labels for the files
-labels = get_ids("/home/chris/telugu/writerids.csv")
+labels = get_ids("/home/chrizandr/data/writerids.csv")
 # All the files in the dataset
 files = os.listdir(dataset)
 

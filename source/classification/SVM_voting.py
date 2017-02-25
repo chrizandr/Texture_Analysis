@@ -95,12 +95,11 @@ def classify(filename, folds=10):
 # ---------------------------------__MAIN__---------------------------------------------
 
 data_dir2 = "/home/chrizandr/Texture_Analysis/data_telugu_blocks/"
-names = ["Features/features_34" , "Features/features_34_LDA"]
+names = [ "Gabor/Gabor", "Gabor/Gabor_LDA"]
 results = list()
 for data_dir in [data_dir2]:
     for filename in names:
         print("Classifying : " + filename)
-        # clsf.options = ['-K', '1', '-W', '0' , '-A' ,'weka.core.neighboursearch.KDTree -A "weka.core.EuclideanDistance -R first-last" -S weka.core.neighboursearch.kdtrees.SlidingMidPointOfWidestSide -W 0.01 -L 40 -N']
         evl = classify(data_dir+filename+".csv")
         print("Evaluating")
         # ------------------------------------

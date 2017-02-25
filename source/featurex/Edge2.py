@@ -35,12 +35,17 @@ for cords in cords16:
         filters_16.append(filt)
 
 for i in filters_16:
-    for j in filters_16:
-        for k in filters_16 + [np.zeros((5,5), dtype=np.uint8)]:
-            if (i!=j).any() and (j!=k).any() and (i!=k).any():
-                for l in filters_16 + [np.zeros((5,5), dtype=np.uint8)]:
-                    if (l!=i).any() and (l!=j).any() and (l!=k).any():
-                        bank_16.append(i+j+k+l)
+    for j in filters_16 + np.zeros((5,5), dtype = np.uint8):
+        if (i!=j).any():
+            bank_16.append(i+j)
+
+# for i in filters_16:
+#     for j in filters_16:
+#         for k in filters_16:
+#             if (i!=j).any() and (j!=k).any() and (i!=k).any():
+#                 for l in filters_16 + [np.zeros((5,5), dtype=np.uint8)]:
+#                     if (l!=i).any() and (l!=j).any() and (l!=k).any():
+#                         bank_16.append(i+j+k+l)
 
 bank = [bank_16[0]]
 for filt in bank_16:
@@ -57,8 +62,8 @@ for filt in bank:
 
 print(len(bank_16))
 
-data_path = "/home/chrizandr/data//telugu_blocks4/"
-output_file ="features16.csv"
+data_path = "/home/chrizandr/data/telugu_blocks/"
+output_file ="conv_12.csv"
 class_labels = "/home/chrizandr/data/writerids.csv"
 
 labels = get_ids(class_labels)
@@ -69,6 +74,8 @@ folderlist.sort()
 f = open(output_file,"w")
 log = open("featurex.log","w")
 
+features = list()
+labels = list()
 for name in folderlist:
     if name[-4:]=='.png':
         print("Processing "+ name)
@@ -78,18 +85,23 @@ for name in folderlist:
         img_name = data_path + name
         img = cv2.imread(img_name, 0)
         img = cv2.threshold(img , 0 , 1 , cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
-
+        img = 1 - img
         feature = list()
         for kernel in bank:
             feature.append(match(img,kernel))
-
         feature = np.array(feature)
-        feature = feature - feature.mean()
-        for feat in feature:
-            f.write(str(feat)+',')
-        f.write(name[0:-4] + '\n')
+        features.append(feature)
+        labels.append(name[0:-4])
         print("--- %s seconds ---" % (time.time() - start_time))
 
+features = np.array(features)
+mean = np.mean(features, axis=0)
+std = np.mean(features, axis=0)
+feature = (features - mean) / std
+for i in range(features.shape[0]):
+    for j in range(features.shape[1]):
+        f.write(str(features[i,j])+',')
+    f.write(str(labels[i]) + '\n')
 
 
 # Put all kernels and match to get the number of points matching the kernel

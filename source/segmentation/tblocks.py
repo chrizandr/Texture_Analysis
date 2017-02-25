@@ -43,18 +43,19 @@ def get_base_texture(components , max_height , shape):
     return blocks
 
 # Path for data and output
-dataset = "/home/chris/telugu_hand/"
+dataset = "/home/chrizandr/data/telugu_hand/"
 # All the files in the dataset
 files = os.listdir(dataset)
 
 def extract(name):
     # Path for data and output
-    dataset = "/home/chris/telugu_hand/"
-    output = "/home/chris/telugu_blocks"
+    dataset = "/home/chrizandr/data/telugu_hand/"
+    output = "/home/chrizandr/data/temp2/"
     # Check if the files are images
     if name[-4:] == ".png":
         print("Processing image : "+ name)
         img = cv2.imread(dataset + name , 0)
+        img = img[5:-5,5:-5]
         components = get_connected_components(img)
         components = refine(components,250)
         comps = refine2(components , img)
@@ -62,11 +63,12 @@ def extract(name):
         for components in comps:
             blocks = get_base_texture(components, img.shape[0], 250)
             index = comps.index(components)
+            # pdb.set_trace()
             print index,
             for i in range(len(blocks)):
-                cv2.imwrite(output + str(3+index)+'/' + name[0:-4] + '-' + str(i) + ".png" , blocks[i])
+                cv2.imwrite(output  + name[0:-4] + '-' + str(i) + ".png" , blocks[i])
         print "Done"
-# extract("b-37.png")
+# extract("f-3.png")
 
 pool = multiprocessing.Pool(5)
 result = pool.map(extract, files)
