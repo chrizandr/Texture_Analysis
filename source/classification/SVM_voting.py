@@ -95,7 +95,7 @@ def classify(filename, folds=10):
 # ---------------------------------__MAIN__---------------------------------------------
 
 data_dir2 = "/home/chrizandr/Texture_Analysis/data_telugu_blocks/"
-names = [ "Gabor/Gabor", "Gabor/Gabor_LDA"]
+names = [ "Features/conv_234_4", "Features/conv_234_4_LDA"]
 results = list()
 for data_dir in [data_dir2]:
     for filename in names:

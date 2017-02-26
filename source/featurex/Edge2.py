@@ -22,33 +22,36 @@ cords8 = [[(-1,1)], [(-1,0)], [(-1,-1)], [(0,-1)], [(1,-1)], [(1,0)], [(1,1)], [
 cords16 = [[(-1,1),(-2,2)], [(-1,0),(-2,0)], [(-1,-1),(-2,-2)],
             [(0,-1),(0,-2)], [(1,-1),(2,-2)], [(1,0),(2,0)],
             [(1,1),(2,2)], [(0,1),(0,2)]]
+cords32 = [[(-1,1),(-2,2),(-3,3)], [(-1,0),(-2,0),(-3,0)], [(-1,-1),(-2,-2),(-3,-3)],
+            [(0,-1),(0,-2),(0,-3)], [(1,-1),(2,-2),(3,-3)], [(1,0),(2,0),(3,0)],
+            [(1,1),(2,2),(3,3)], [(0,1),(0,2),(0,3)]]
 
-bank_16 = list()
-filters_16 = list()
-for cords in cords16:
-    filt = np.zeros((5,5) , dtype = np.uint8)
+bank_32 = list()
+filters_32 = list()
+for cords in cords32:
+    filt = np.zeros((7,7) , dtype = np.uint8)
     for point in cords:
         x = point[0]
         y = point[1]
-        filt[2,2] = 1
-        filt[(2+x),(2+y)] = 1
-        filters_16.append(filt)
+        filt[3,3] = 1
+        filt[(3+x),(3+y)] = 1
+        filters_32.append(filt)
 
-for i in filters_16:
-    for j in filters_16 + np.zeros((5,5), dtype = np.uint8):
+for i in filters_32:
+    for j in filters_32 + np.zeros((7,7), dtype = np.uint8):
         if (i!=j).any():
-            bank_16.append(i+j)
+            bank_32.append(i+j)
 
-# for i in filters_16:
-#     for j in filters_16:
-#         for k in filters_16:
-#             if (i!=j).any() and (j!=k).any() and (i!=k).any():
-#                 for l in filters_16 + [np.zeros((5,5), dtype=np.uint8)]:
-#                     if (l!=i).any() and (l!=j).any() and (l!=k).any():
-#                         bank_16.append(i+j+k+l)
+for i in filters_32:
+    for j in filters_32:
+        for k in filters_32:
+            if (i!=j).any() and (j!=k).any() and (i!=k).any():
+                for l in filters_32 + [np.zeros((7,7), dtype=np.uint8)]:
+                    if (l!=i).any() and (l!=j).any() and (l!=k).any():
+                        bank_32.append(i+j+k+l)
 
-bank = [bank_16[0]]
-for filt in bank_16:
+bank = [bank_32[0]]
+for filt in bank_32:
     flag = 0
     for f in bank:
         if (f==filt).all():
@@ -58,12 +61,12 @@ for filt in bank_16:
 
 # pdb.set_trace()
 for filt in bank:
-    filt[2,2] = 1
+    filt[3,3] = 1
 
-print(len(bank_16))
+print(len(bank_32))
 
 data_path = "/home/chrizandr/data/telugu_blocks/"
-output_file ="conv_12.csv"
+output_file ="conv_234_4.csv"
 class_labels = "/home/chrizandr/data/writerids.csv"
 
 labels = get_ids(class_labels)
@@ -88,7 +91,7 @@ for name in folderlist:
         img = 1 - img
         feature = list()
         for kernel in bank:
-            feature.append(match(img,kernel))
+            feature.append(match(img, kernel))
         feature = np.array(feature)
         features.append(feature)
         labels.append(name[0:-4])

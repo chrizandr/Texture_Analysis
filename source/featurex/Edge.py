@@ -98,7 +98,7 @@ def differentiate(vect):
         new_vect[i-1] = vect[i] - vect[i-1]
     return new_vect
 
-outfolder = "/home/chrizandr/data/telugu_blocks4/"
+outfolder = "/home/chrizandr/data/telugu_blocks/"
 
 folderlist = os.listdir(outfolder)
 folderlist.sort()

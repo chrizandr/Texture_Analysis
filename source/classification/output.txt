@@ -284,6 +284,8 @@ NOTE: Do accuracy with different features and classifiers also (KNN, SVM)
 Gabor/Gabor 0.6666666666666667
 Gabor/Gabor_LDA 90.00000000000003
 
+Edge_old/Edge_direction 43.33333333333335
+Edge_old/Edge_direction_LDA 93.99999999999997
 
 2 joints
 Features/conv_12 0.6666666666666667

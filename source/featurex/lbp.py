@@ -38,23 +38,22 @@ def extract(name):
 
 	return (A , name)
 
-for x in range(3,8):
-    data_path = "/home/chris/telugu_blocks%d/" %(x)
-    output_file ="LBP%d.csv"%(x)
+data_path = "/home/chrizandr/data/telugu_blocks/"
+output_file ="LBP.csv"
 
-    folderlist = os.listdir(data_path)
-    folderlist.sort()
-    # Open the output file and the log file in write mode
+folderlist = os.listdir(data_path)
+folderlist.sort()
+# Open the output file and the log file in write mode
 
-    f = open(output_file,"w")
+f = open(output_file,"w")
 
-    pool = multiprocessing.Pool(4)
-    result = pool.map(extract, folderlist)
+pool = multiprocessing.Pool(4)
+result = pool.map(extract, folderlist)
 
-    for feature in result:
-    	A , name = feature
-    	for x in A:
-    		f.write(str(x)+',')
-    	f.write(name[0:-4] + '\n')
+for feature in result:
+	A , name = feature
+	for x in A:
+		f.write(str(x)+',')
+	f.write(name[0:-4] + '\n')
 
-    f.close()
+f.close()
