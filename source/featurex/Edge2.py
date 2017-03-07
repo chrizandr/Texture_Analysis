@@ -5,13 +5,13 @@ import os
 import cv2
 import matplotlib.pyplot as plt
 
-def get_ids(id_file):
-    f = open(id_file,"r")
-    dictionary = dict()
-    for line in f:
-        line = line.split(",")
-        dictionary[line[0]] = line[1]
-    return dictionary
+def get_ids(filename):
+    ids = dict()
+    with open(filename) as f:
+        reader = csv.reader(f , delimiter=',')
+        for row in reader:
+            ids[ row[0][0:-4] ] = int( row[1] )
+    return ids
 
 
 def match(img, kernel):
@@ -23,39 +23,44 @@ cords8 = [[(-1,1)], [(-1,0)], [(-1,-1)], [(0,-1)], [(1,-1)], [(1,0)], [(1,1)], [
 cords16 = [[(-1,1),(-2,2)], [(-1,0),(-2,0)], [(-1,-1),(-2,-2)],
             [(0,-1),(0,-2)], [(1,-1),(2,-2)], [(1,0),(2,0)],
             [(1,1),(2,2)], [(0,1),(0,2)]]
+
 cords32 = [[(-1,1),(-2,2),(-3,3)], [(-1,0),(-2,0),(-3,0)], [(-1,-1),(-2,-2),(-3,-3)],
             [(0,-1),(0,-2),(0,-3)], [(1,-1),(2,-2),(3,-3)], [(1,0),(2,0),(3,0)],
             [(1,1),(2,2),(3,3)], [(0,1),(0,2),(0,3)]]
 
+shape = (7,7)
 bank_32 = list()
 filters_32 = list()
 for cords in cords32:
-    filt = np.zeros((7,7) , dtype = np.uint8)
+    filt = np.zeros(shape , dtype = np.uint8)
     for point in cords:
         x = point[0]
         y = point[1]
-        filt[3,3] = 1
-        filt[(3+x),(3+y)] = 1
+        filt[shape[0]/2, shape[1]/2] = 1
+        filt[(shape[0]/2 + x),(shape[1]/2 + y)] = 1
     filters_32.append(filt)
-plt.figure(1)
-for i in range(1,len(filters_32)+1):
-    plt.subplot(2,4,i)
-    plt.imshow(1-filters_32[i-1] , 'gray')
-plt.show()
-pdb.set_trace()
+
+# 2 junctions
 for i in filters_32:
-    for j in filters_32 + np.zeros((7,7), dtype = np.uint8):
+    for j in filters_32:
         if (i!=j).any():
             bank_32.append(i+j)
 
+# 3 junctions
 for i in filters_32:
     for j in filters_32:
         for k in filters_32:
             if (i!=j).any() and (j!=k).any() and (i!=k).any():
-                for l in filters_32 + [np.zeros((7,7), dtype=np.uint8)]:
+                bank_32.append(i+j+k)
+# 4 junctions
+for i in filters_32:
+    for j in filters_32:
+        for k in filters_32:
+            if (i!=j).any() and (j!=k).any() and (i!=k).any():
+                for l in filters_32:
                     if (l!=i).any() and (l!=j).any() and (l!=k).any():
                         bank_32.append(i+j+k+l)
-
+# Removing duplicates if any
 bank = [bank_32[0]]
 for filt in bank_32:
     flag = 0
@@ -65,13 +70,12 @@ for filt in bank_32:
     if not flag:
         bank.append(filt)
 
+# Making center = 1
 for filt in bank:
     filt[3,3] = 1
-pdb.set_trace()
 
-
-data_path = "/home/chrizandr/data/telugu_blocks/"
-output_file ="conv_234_4.csv"
+data_path = "/home/chrizandr/data/writing_segment/"
+output_file ="/home/chrizandr/Texture_Analysis/data_telugu/Features/conv_23_4.csv"
 class_labels = "/home/chrizandr/data/writerids.csv"
 
 labels = get_ids(class_labels)
@@ -87,9 +91,7 @@ labels = list()
 for name in folderlist:
     if name[-4:]=='.png':
         print("Processing "+ name)
-
         start_time = time.time()
-
         img_name = data_path + name
         img = cv2.imread(img_name, 0)
         img = cv2.threshold(img , 0 , 1 , cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
@@ -110,7 +112,6 @@ for i in range(features.shape[0]):
     for j in range(features.shape[1]):
         f.write(str(features[i,j])+',')
     f.write(str(labels[i]) + '\n')
-
 
 # Put all kernels and match to get the number of points matching the kernel
 # Keep all in ascending order of angles

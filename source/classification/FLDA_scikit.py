@@ -14,9 +14,9 @@ names1 = ["GSCM/GSCM_1","GSCM/GSCM_2","GSCM/GSCM_3","GSCM/GSCM_4","GSCM/GSCM_5",
 names2 = ["Gabor/Gabor_all", "Gabor/Gabor_4", "Gabor/Gabor_8", "Gabor/Gabor_16", "Gabor/Gabor_32", ]
 names3 = ["Edge/Edge_all","Edge/Edge_8","Edge/Edge_12","Edge/Edge_16","Edge/Edge_dp_16",]
 names4 = ["LBP/LBP"]
-names = ["LBP3","LBP4","LBP5","LBP6","LBP7",]
-for filename in ["Gabor/Gabor", "Edge_old/Edge_direction"]:
-    path = "/home/chrizandr/Texture_Analysis/data_telugu_blocks/"
+names = ["LBP3","LBP4","LBP5","LBP6","LBP7"]
+for filename in ["Features/conv_234_4", "Features/conv_2_4", "Features/conv_23_4"]:
+    path = "/home/chrizandr/Texture_Analysis/data_telugu/"
     f = open(path+filename+".csv",'r')
     train_data = list()
     train_class = list()
@@ -28,7 +28,7 @@ for filename in ["Gabor/Gabor", "Edge_old/Edge_direction"]:
         train_class.append(l[-1])
     f.close()
     ids = get_ids("/home/chrizandr/data/writerids.csv")
-    tr_class = [ids[x.split('-')[0]+'-'+x.split('-')[1] + '.png'] for x in train_class]
+    tr_class = [ids[x+'.png'] for x in train_class]
     clf = LDA(store_covariance = True, n_components = 15)
     print(len(train_data[0]))
     trans = clf.fit_transform(train_data,tr_class)
