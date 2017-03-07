@@ -281,16 +281,50 @@ LBP6_LDA 91.067961165
 
 NOTE: Do accuracy with different features and classifiers also (KNN, SVM)
 
-Gabor/Gabor 0.6666666666666667
-Gabor/Gabor_LDA 90.00000000000003
 
-Edge_old/Edge_direction 43.33333333333335
-Edge_old/Edge_direction_LDA 93.99999999999997
 
-2 joints
-Features/conv_12 0.6666666666666667
-Features/conv_12_LDA 97.33333333333334
 
-2,3,4 joints
-Features/features 0.6666666666666667
-Features/features_LDA 96.66666666666666
+
+-----------------------------------------------
+KNN
+Features/conv_2_3_LDA, 93.3333333333
+Features/conv_2_3, 55.0666666667
+Features/conv_234_3_LDA, 80.9333333333
+Features/conv_234_3, 66.4666666667
+Features/conv_234_4_LDA, 91.6
+Features/conv_234_4, 77.7333333333
+
+Edge_old/Edge_direction 81.33333333333333
+Edge_old/Edge_direction_LDA 92.66666666666666
+Gabor/Gabor_LDA 86.66666666666667
+Gabor/Gabor 63.33333333333333
+
+-----------------------------------------------
+
+SVM linear
+Features/conv_2_3_LDA 96.0
+Features/conv_2_3 91.33333333333333
+Features/conv_234_3_LDA 99.33333333333333
+Features/conv_234_3 92.0
+Features/conv_234_4_LDA 99.33333333333333
+Features/conv_234_4 94.66666666666667
+
+Edge_old/Edge_direction 94.0
+Edge_old/Edge_direction_LDA 94.66666666666667
+Gabor/Gabor_LDA 92.0
+Gabor/Gabor 86.66666666666667
+
+-----------------------------------------------
+SVM poly d=2
+
+Features/conv_2_3_LDA 96.0
+Features/conv_2_3 93.33333333333333
+Features/conv_234_3_LDA 95.33333333333334
+Features/conv_234_3 92.66666666666666
+Features/conv_234_4_LDA 94.66666666666667
+Features/conv_234_4 96.66666666666667
+
+Edge_old/Edge_direction 89.33333333333333
+Edge_old/Edge_direction_LDA 94.66666666666667
+Gabor/Gabor_LDA 87.33333333333333
+Gabor/Gabor 84.0

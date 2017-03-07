@@ -60,9 +60,9 @@ def extract(name):
         components = refine(components,250)
         comps = refine2(components , img)
         print "Writing blocks"
-        for components in comps:
-            blocks = get_base_texture(components, img.shape[0], 250)
-            index = comps.index(components)
+        for component in comps:
+            blocks = get_base_texture(component, img.shape[0], 250)
+            index = comps.index(component)
             # pdb.set_trace()
             print index,
             for i in range(len(blocks)):

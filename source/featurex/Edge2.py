@@ -3,6 +3,7 @@ import pdb
 import time
 import os
 import cv2
+import matplotlib.pyplot as plt
 
 def get_ids(id_file):
     f = open(id_file,"r")
@@ -35,8 +36,13 @@ for cords in cords32:
         y = point[1]
         filt[3,3] = 1
         filt[(3+x),(3+y)] = 1
-        filters_32.append(filt)
-
+    filters_32.append(filt)
+plt.figure(1)
+for i in range(1,len(filters_32)+1):
+    plt.subplot(2,4,i)
+    plt.imshow(1-filters_32[i-1] , 'gray')
+plt.show()
+pdb.set_trace()
 for i in filters_32:
     for j in filters_32 + np.zeros((7,7), dtype = np.uint8):
         if (i!=j).any():
@@ -59,11 +65,10 @@ for filt in bank_32:
     if not flag:
         bank.append(filt)
 
-# pdb.set_trace()
 for filt in bank:
     filt[3,3] = 1
+pdb.set_trace()
 
-print(len(bank_32))
 
 data_path = "/home/chrizandr/data/telugu_blocks/"
 output_file ="conv_234_4.csv"

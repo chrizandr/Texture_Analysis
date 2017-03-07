@@ -63,7 +63,7 @@ def dataSplit(data, labels, ids):
 Classifies a given feature file using a classifier
 '''
 
-def classify(filename, folds=10):
+def classify(filename, folds):
     with open(filename) as f:
         reader = csv.reader(f , delimiter=',')
         data = list()
@@ -76,7 +76,7 @@ def classify(filename, folds=10):
     for i in range(folds):
         print(i)
         train_data, train_class, test_data = dataSplit(data, labels, ids)
-        svm = SVC()
+        svm = KNeighborsClassifier()
         svm.fit(train_data, train_class)
         correct = 0.0
         for page in test_data:
@@ -94,16 +94,16 @@ def classify(filename, folds=10):
 
 # ---------------------------------__MAIN__---------------------------------------------
 
-data_dir2 = "/home/chrizandr/Texture_Analysis/data_telugu_blocks/"
-names = [ "Features/conv_234_4", "Features/conv_234_4_LDA"]
+data_dir = "/home/chrizandr/Texture_Analysis/data_telugu_blocks/"
+names = [ "Features/conv_2_3_LDA","Features/conv_2_3","Features/conv_234_3_LDA","Features/conv_234_3","Features/conv_234_4_LDA","Features/conv_234_4"]
+names1 = ["Edge_old/Edge_direction","Edge_old/Edge_direction_LDA", "Gabor/Gabor_LDA" , "Gabor/Gabor"]
 results = list()
-for data_dir in [data_dir2]:
-    for filename in names:
-        print("Classifying : " + filename)
-        evl = classify(data_dir+filename+".csv")
-        print("Evaluating")
-        # ------------------------------------
-        results.append((filename, evl))
+for filename in names1:
+    print("Classifying : " + filename)
+    evl = classify( data_dir + filename + ".csv", 1)
+    print("Evaluating")
+    # ------------------------------------
+    results.append((filename, evl))
 pdb.set_trace()
 
 #---------------------------------------------------------------
