@@ -4,6 +4,7 @@ import time
 import os
 import cv2
 import matplotlib.pyplot as plt
+import csv
 
 def get_ids(filename):
     ids = dict()
@@ -74,8 +75,9 @@ for filt in bank_32:
 for filt in bank:
     filt[3,3] = 1
 
-data_path = "/home/chrizandr/data/writing_segment/"
-output_file ="/home/chrizandr/Texture_Analysis/data_telugu/Features/conv_23_4.csv"
+
+data_path = "/home/chrizandr/data/telugu_ng_5/"
+output_file ="/home/chrizandr/Texture_Analysis/noise/Features/telugu_ng_5.csv"
 class_labels = "/home/chrizandr/data/writerids.csv"
 
 labels = get_ids(class_labels)

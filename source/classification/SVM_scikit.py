@@ -1,5 +1,6 @@
 import numpy as np
 from sklearn.svm import SVC
+from sklearn.neighbors import KNeighborsClassifier
 import pdb,csv
 
 def getIds(filename):
@@ -36,6 +37,7 @@ def classify(filename):
         t_train = np.array(train)
         t_test = np.array(test)
         svm = SVC(kernel='linear')
+        # svm = KNeighborsClassifier()
         svm.fit(t_train[:,0:-1],t_train[:,-1])
         result = svm.predict(t_test[:,0:-1])
         correct = 0
@@ -46,8 +48,8 @@ def classify(filename):
     return sum(results)/len(results)
 
 results = list()
-for data_dir in ["/home/chrizandr/Texture_Analysis/data_telugu/"]:
-    for filename in ["Features/conv_2_4", "Features/conv_23_4"]:
+for data_dir in ["/home/chrizandr/Texture_Analysis/noise/"]:
+    for filename in ["Edge/Edge_ng_1","Edge/Edge_ng_2","Edge/Edge_ng_3","Edge/Edge_ng_4","Edge/Edge_ng_5",]:
         print("Classifying : " + filename)
         evl = classify(data_dir+filename+".csv")
         print("Evaluating")

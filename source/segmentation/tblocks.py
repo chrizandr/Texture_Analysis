@@ -65,7 +65,7 @@ def extract(name):
             index = comps.index(component)
             # pdb.set_trace()
             print index,
-            for i in range(len(blocks)):
+            for i in range(5):
                 cv2.imwrite(output  + name[0:-4] + '-' + str(i) + ".png" , blocks[i])
         print "Done"
 # extract("f-3.png")

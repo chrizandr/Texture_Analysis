@@ -98,44 +98,45 @@ def differentiate(vect):
         new_vect[i-1] = vect[i] - vect[i-1]
     return new_vect
 
-outfolder = "/home/chrizandr/data/telugu_blocks/"
+for pagenum in  range(1,6):
+    outfolder = "/home/chrizandr/data/telugu_ng_"+ str(pagenum)+"/"
 
-folderlist = os.listdir(outfolder)
-folderlist.sort()
-f = open("Edge_direction.csv","w")
+    folderlist = os.listdir(outfolder)
+    folderlist.sort()
+    f = open("Edge_ng_" +str(pagenum)+ ".csv","w")
 
-print("Starting loop")
-for name in folderlist:
-    if name[-4:] == '.png':
-        n = name[0:-4]
+    print("Starting loop")
+    for name in folderlist:
+        if name[-4:] == '.png':
+            n = name[0:-4]
 
-        print("Processing", name)
+            print("Processing", name)
 
-        start_time = time.time()
-        img= io.imread(outfolder + name);
+            start_time = time.time()
+            img= io.imread(outfolder + name);
 
-        eimg=sobel(img)
-        thresh=threshold_otsu(eimg)
+            eimg=sobel(img)
+            thresh=threshold_otsu(eimg)
 
-        eimg[eimg>thresh] = 1
-        eimg[eimg<=thresh] = 0
+            eimg[eimg>thresh] = 1
+            eimg[eimg<=thresh] = 0
 
-        binary=eimg
-        binary=binary.astype(int)
+            binary=eimg
+            binary=binary.astype(int)
 
-        orient8,orient12,orient16 = Edge_direction(binary)
-        diff_orient16 = differentiate(orient16)
+            orient8,orient12,orient16 = Edge_direction(binary)
+            diff_orient16 = differentiate(orient16)
 
-        for i in orient8:
-            f.write(str(i)+',')
-        for i in orient12:
-            f.write(str(i)+',')
-        for i in orient16:
-            f.write(str(i)+',')
-        for i in diff_orient16:
-            f.write(str(i)+',')
-        f.write(n +'\n')
-        print("--- %s seconds ---" % (time.time() - start_time))
-print("Done :)")
+            for i in orient8:
+                f.write(str(i)+',')
+            for i in orient12:
+                f.write(str(i)+',')
+            for i in orient16:
+                f.write(str(i)+',')
+            for i in diff_orient16:
+                f.write(str(i)+',')
+            f.write(n +'\n')
+            print("--- %s seconds ---" % (time.time() - start_time))
+    print("Done :)")
 
-f.close()
+    f.close()

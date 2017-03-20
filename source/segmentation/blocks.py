@@ -50,10 +50,9 @@ def get_connected_components(img):
         min_hor = sub_region[1].min()
         max_ver = sub_region[0].max()
         min_ver = sub_region[0].min()
-        region = img[min_ver : max_ver, min_hor :max_hor]
+        region = b_img[min_ver : max_ver, min_hor :max_hor]
         if max_hor - min_hor > 3 and max_ver - min_ver > 3:
             components.append(region)
-
     return components
 
 def strip_white(img):
@@ -63,25 +62,24 @@ def strip_white(img):
     cords = (proj != (255*n) ).nonzero()
     return img[cords[0][0]:cords[0][-1]+1 , :]
 
-def feature_set(img):
-    m = img.shape[0]
-    n = img.shape[1]
-    img = local_binary_pattern(img,8,1,'default')
-    img = img.astype(np.uint8)
-    feature=[0 for i in range(0,256)]
-    for i in range(0,m):
-        for j in range(0,n):
-            feature[img[i,j]]+=1
-    return feature
+def match(img, kernel):
+    output = cv2.filter2D(img, -1, kernel)
+    return len((output[1:-1,1:-1]==kernel.sum()).nonzero()[0])
 
-def refine2(components , img):
+def feature_set(img, bank):
+    feature = list()
+    for kernel in bank:
+        feature.append(match(img, kernel))
+    feature = np.array(feature)
+
+def refine2(components , img, bank):
     # Finding global feature image
-    f = np.array(feature_set(img))
+    f = np.array(feature_set(img,bank))
 
     # Finding feature for each of the connectedComponents
     feature = list()
     for comp in components:
-        feature.append(feature_set(comp))
+        feature.append(feature_set(comp, bank))
     feature = np.array(feature)
 
     # Calculating cosine_similarity with the global feature

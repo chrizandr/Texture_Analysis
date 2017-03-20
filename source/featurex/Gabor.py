@@ -40,8 +40,8 @@ frequencies = [4,8,16,32]       # The scales of the different Gabor filters to b
 angles = [0,45,90,135]
 # ------------------------------
 kernels = make_Gabor_kernels(sigma,angles,frequencies)
-data_path = "/home/chrizandr/data/writing_segment/"
-output_file ="Gabor.csv"
+data_path = "/home/chrizandr/data/telugu_ng_5/"
+output_file ="Gabor_ng_5.csv"
 # Give the path of the file conataining the class labels for the images.
 # Format for the file [each new line conataining] in '.csv' format
 # <filename[without the file extension]>,<classlabel>
