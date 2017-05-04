@@ -39,10 +39,11 @@ def extract(name):
 	return (A , name)
 
 data_path = "/home/chrizandr/data/telugu_blocks/"
-output_file ="LBP.csv"
+output_file ="lbp.csv"
 
 folderlist = os.listdir(data_path)
 folderlist.sort()
+# folderlist.remove("writerids.csv")
 # Open the output file and the log file in write mode
 
 f = open(output_file,"w")
@@ -57,3 +58,10 @@ for feature in result:
 	f.write(name[0:-4] + '\n')
 
 f.close()
+
+label = 0
+classes = list()
+for i in range(78):
+    if i%2==0:
+        label += 1
+    classes.append(("a-"+str(i),label))

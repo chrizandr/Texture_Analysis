@@ -11,8 +11,8 @@ def get_ids(id_file):
         dictionary[line[0]] = int(line[1])
     return dictionary
 
-for filename in ["Features/conv_234_4"]:
-    path = "/home/chrizandr/Texture_Analysis/data_telugu_blocks/"
+for filename in ["bangla"]:
+    path = "/home/chrizandr/Texture_Analysis/"
 
     f = open(path+filename+".csv",'r')
     train_data = list()
@@ -24,8 +24,8 @@ for filename in ["Features/conv_234_4"]:
         train_data.append(ly)
         train_class.append(l[-1])
     f.close()
-    ids = get_ids("/home/chrizandr/data/writerids.csv")
-    tr_class = [ids[x.split('-')[0]+'-'+x.split('-')[1] + '.png'] for x in train_class]
+    ids = get_ids("/home/chrizandr/data/bangla_blocks/writerid_eng.csv")
+    tr_class = [ids[x.split('-')[0]+'-'+x.split('-')[1]] for x in train_class]
     results = list()
     for i in range(1,77):
         print i
@@ -38,8 +38,8 @@ for filename in ["Features/conv_234_4"]:
                 f.write(str(entry)+',')
             f.write(str(train_class[i])+'\n')
         f.close()
-        data_dir = "/home/chrizandr/Texture_Analysis/data_telugu_blocks/"
-        name = "Features/conv_234_4_LDA1"
+        data_dir = "/home/chrizandr/Texture_Analysis/"
+        name = "IAM_LDA"
         evl = classify(data_dir + name + ".csv" , 1)
         results.append((i,evl))
     pdb.set_trace()

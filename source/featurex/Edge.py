@@ -2,8 +2,9 @@ import numpy as np
 import pdb
 import time
 import os
-from skimage.filters import sobel,threshold_otsu
-from skimage import io
+import cv2
+import multiprocessing
+
 
 def Edge_direction(binary):
     m,n=binary.shape
@@ -98,45 +99,39 @@ def differentiate(vect):
         new_vect[i-1] = vect[i] - vect[i-1]
     return new_vect
 
-for pagenum in  range(1,6):
-    outfolder = "/home/chrizandr/data/telugu_ng_"+ str(pagenum)+"/"
+def extract(name):
+    outfolder = "/home/chrizandr/data/writing_segment/"
+    if name[-4:] == '.png':
+        n = name[0:-4]
+        print("Processing", name)
+        start_time = time.time()
+        img= cv2.imread(outfolder + name,0);
+        eimg=cv2.Canny(img,0,255)
+        binary = cv2.threshold(eimg , 0 , 1 , cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
+        orient8,orient12,orient16 = Edge_direction(binary)
+        diff_orient16 = differentiate(orient16)
+        print("--- %s seconds ---" % (time.time() - start_time))
+    return name[0:-4],orient8,orient12,orient16,diff_orient16
 
-    folderlist = os.listdir(outfolder)
-    folderlist.sort()
-    f = open("Edge_ng_" +str(pagenum)+ ".csv","w")
 
-    print("Starting loop")
-    for name in folderlist:
-        if name[-4:] == '.png':
-            n = name[0:-4]
+outfolder = "/home/chrizandr/data/writing_segment/"
 
-            print("Processing", name)
+folderlist = os.listdir(outfolder)
+folderlist.sort()
+folderlist.remove("writerids.csv")
 
-            start_time = time.time()
-            img= io.imread(outfolder + name);
+pool = multiprocessing.Pool(4)
+result = pool.map(extract, folderlist)
 
-            eimg=sobel(img)
-            thresh=threshold_otsu(eimg)
-
-            eimg[eimg>thresh] = 1
-            eimg[eimg<=thresh] = 0
-
-            binary=eimg
-            binary=binary.astype(int)
-
-            orient8,orient12,orient16 = Edge_direction(binary)
-            diff_orient16 = differentiate(orient16)
-
-            for i in orient8:
-                f.write(str(i)+',')
-            for i in orient12:
-                f.write(str(i)+',')
-            for i in orient16:
-                f.write(str(i)+',')
-            for i in diff_orient16:
-                f.write(str(i)+',')
-            f.write(n +'\n')
-            print("--- %s seconds ---" % (time.time() - start_time))
-    print("Done :)")
-
-    f.close()
+f = open("Edge.csv","w")
+for r in range(len(result)):
+    for i in result[r][1]:
+        f.write(str(i)+',')
+    for i in result[r][2]:
+        f.write(str(i)+',')
+    for i in result[r][3]:
+        f.write(str(i)+',')
+    for i in result[r][4]:
+        f.write(str(i)+',')
+    f.write(result[r][0] +'\n')
+f.close()

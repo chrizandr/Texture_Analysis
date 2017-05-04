@@ -18,10 +18,9 @@ def refine(components , shape):
     useful = list()
     for component in components:
         # Binarising
-        comp = cv2.threshold(component , 0 , 1 , cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
         struct = np.ones((3,3),dtype=np.uint8)
         # Eroding and Dilating
-        img = cv2.dilate(1-comp,struct,iterations=1)
+        img = cv2.dilate(1-component,struct,iterations=1)
     	img = cv2.erode(img,struct,iterations=1)
         # Thresholding
         high = (img.shape[0]*img.shape[1])*0.75
@@ -35,9 +34,7 @@ def refine(components , shape):
 def get_connected_components(img):
 
     # Making the image into binary
-    b_img = cv2.threshold(img , 0 , 1 , cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
-    nimg = cv2.connectedComponents(1-b_img)[1]
-
+    nimg = cv2.connectedComponents(1-img)[1]
     # Get the connectedComponents
     print("Getting the connectedComponents")
     labels = set(np.unique(nimg))
@@ -50,7 +47,7 @@ def get_connected_components(img):
         min_hor = sub_region[1].min()
         max_ver = sub_region[0].max()
         min_ver = sub_region[0].min()
-        region = b_img[min_ver : max_ver, min_hor :max_hor]
+        region = img[min_ver : max_ver, min_hor :max_hor]
         if max_hor - min_hor > 3 and max_ver - min_ver > 3:
             components.append(region)
     return components
@@ -66,20 +63,26 @@ def match(img, kernel):
     output = cv2.filter2D(img, -1, kernel)
     return len((output[1:-1,1:-1]==kernel.sum()).nonzero()[0])
 
-def feature_set(img, bank):
-    feature = list()
-    for kernel in bank:
-        feature.append(match(img, kernel))
-    feature = np.array(feature)
+def feature_set(img):
+    m = img.shape[0]
+    n = img.shape[1]
+    img = local_binary_pattern(img,8,1,'default')
+    # pdb.set_trace()
+    img = img.astype(np.uint8)
+    feature=[0 for i in range(0,256)]
+    for i in range(0,m):
+        for j in range(0,n):
+            feature[img[i,j]]+=1
+    return feature
 
-def refine2(components , img, bank):
+def refine2(components , img):
     # Finding global feature image
-    f = np.array(feature_set(img,bank))
+    f = np.array(feature_set(img))
 
     # Finding feature for each of the connectedComponents
     feature = list()
     for comp in components:
-        feature.append(feature_set(comp, bank))
+        feature.append(feature_set(comp))
     feature = np.array(feature)
 
     # Calculating cosine_similarity with the global feature

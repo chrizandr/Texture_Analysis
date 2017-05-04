@@ -29,10 +29,10 @@ cords32 = [[(-1,1),(-2,2),(-3,3)], [(-1,0),(-2,0),(-3,0)], [(-1,-1),(-2,-2),(-3,
             [(0,-1),(0,-2),(0,-3)], [(1,-1),(2,-2),(3,-3)], [(1,0),(2,0),(3,0)],
             [(1,1),(2,2),(3,3)], [(0,1),(0,2),(0,3)]]
 
-shape = (7,7)
+shape = (5,5)
 bank_32 = list()
 filters_32 = list()
-for cords in cords32:
+for cords in cords16:
     filt = np.zeros(shape , dtype = np.uint8)
     for point in cords:
         x = point[0]
@@ -73,12 +73,12 @@ for filt in bank_32:
 
 # Making center = 1
 for filt in bank:
-    filt[3,3] = 1
+    filt[2,2] = 1
+# pdb.set_trace()
 
-
-data_path = "/home/chrizandr/data/telugu_ng_5/"
-output_file ="/home/chrizandr/Texture_Analysis/noise/Features/telugu_ng_5.csv"
-class_labels = "/home/chrizandr/data/writerids.csv"
+data_path = "/home/chrizandr/data/IAM_blocks/"
+output_file ="/home/chrizandr/Texture_Analysis/IAM_blocks/con_234_3.csv"
+class_labels = "/home/chrizandr/data/writerid_eng.csv"
 
 labels = get_ids(class_labels)
 
@@ -87,12 +87,12 @@ folderlist.sort()
 
 f = open(output_file,"w")
 log = open("featurex.log","w")
-
+print("Starting")
 features = list()
 labels = list()
 for name in folderlist:
     if name[-4:]=='.png':
-        print("Processing "+ name)
+        print("Processing " + name)
         start_time = time.time()
         img_name = data_path + name
         img = cv2.imread(img_name, 0)
@@ -114,6 +114,7 @@ for i in range(features.shape[0]):
     for j in range(features.shape[1]):
         f.write(str(features[i,j])+',')
     f.write(str(labels[i]) + '\n')
-
+f.close()
+pdb.set_trace()
 # Put all kernels and match to get the number of points matching the kernel
 # Keep all in ascending order of angles

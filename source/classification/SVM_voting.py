@@ -94,13 +94,13 @@ def classify(filename, folds):
 
 # ---------------------------------__MAIN__---------------------------------------------
 
-data_dir = "/home/chrizandr/Texture_Analysis/data_telugu_blocks/"
-names = [ "Features/conv_2_3_LDA","Features/conv_2_3","Features/conv_234_3_LDA","Features/conv_234_3","Features/conv_234_4_LDA","Features/conv_234_4"]
+data_dir = "/home/chrizandr/Texture_Analysis/data_telugu/"
+names = [ "Features/conv_234_4_LDA","Features/conv_234_4"]
 names1 = ["Edge_old/Edge_direction","Edge_old/Edge_direction_LDA", "Gabor/Gabor_LDA" , "Gabor/Gabor"]
 results = list()
-for filename in names1:
+for filename in names:
     print("Classifying : " + filename)
-    evl = classify( data_dir + filename + ".csv", 1)
+    evl = classify( data_dir + filename + ".csv", 10)
     print("Evaluating")
     # ------------------------------------
     results.append((filename, evl))

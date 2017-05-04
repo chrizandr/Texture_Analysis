@@ -36,8 +36,8 @@ def classify(filename):
                 train.append(dataset[i,:])
         t_train = np.array(train)
         t_test = np.array(test)
-        svm = SVC(kernel='linear')
-        # svm = KNeighborsClassifier()
+        # svm = SVC(kernel='poly')
+        svm = KNeighborsClassifier()
         svm.fit(t_train[:,0:-1],t_train[:,-1])
         result = svm.predict(t_test[:,0:-1])
         correct = 0
@@ -49,7 +49,7 @@ def classify(filename):
 
 results = list()
 for data_dir in ["/home/chrizandr/Texture_Analysis/noise/"]:
-    for filename in ["Edge/Edge_ng_1","Edge/Edge_ng_2","Edge/Edge_ng_3","Edge/Edge_ng_4","Edge/Edge_ng_5",]:
+    for filename in ["Features/telugu_ng_1","Features/telugu_ng_2","Features/telugu_ng_3","Features/telugu_ng_4","Features/telugu_ng_5","Features/telugu_ng_1_LDA","Features/telugu_ng_2_LDA","Features/telugu_ng_3_LDA","Features/telugu_ng_4_LDA","Features/telugu_ng_5_LDA",]:
         print("Classifying : " + filename)
         evl = classify(data_dir+filename+".csv")
         print("Evaluating")

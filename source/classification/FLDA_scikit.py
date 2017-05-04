@@ -15,8 +15,8 @@ names2 = ["Gabor/Gabor_all", "Gabor/Gabor_4", "Gabor/Gabor_8", "Gabor/Gabor_16",
 names3 = ["Edge/Edge_all","Edge/Edge_8","Edge/Edge_12","Edge/Edge_16","Edge/Edge_dp_16",]
 names4 = ["LBP/LBP"]
 names = ["LBP3","LBP4","LBP5","LBP6","LBP7"]
-for filename in ["Features/telugu_ng_1","Features/telugu_ng_2","Features/telugu_ng_3","Features/telugu_ng_4","Features/telugu_ng_5",]:
-    path = "/home/chrizandr/Texture_Analysis/noise/"
+for filename in ["conv_234_4","sub_234_4"]:
+    path = "/home/chrizandr/Texture_Analysis/IAM_blocks/"
     f = open(path+filename+".csv",'r')
     train_data = list()
     train_class = list()
@@ -27,8 +27,8 @@ for filename in ["Features/telugu_ng_1","Features/telugu_ng_2","Features/telugu_
         train_data.append(ly)
         train_class.append(l[-1])
     f.close()
-    ids = get_ids("/home/chrizandr/data/writerids.csv")
-    tr_class = [ids[x+'.png'] for x in train_class]
+    ids = get_ids("/home/chrizandr/data/writerid_eng.csv")
+    tr_class = [ids[x.split('-')[0]+"-"+x.split('-')[1]] for x in train_class]
     clf = LDA(store_covariance = True, n_components = 15)
     print(len(train_data[0]))
     trans = clf.fit_transform(train_data,tr_class)

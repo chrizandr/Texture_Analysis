@@ -8,6 +8,7 @@ import multiprocessing
 
 def get_base_texture(components , max_height , shape):
     constant_x = 0
+    components = [x*255 for x in components]
     comps =list()
     for each in components:
         cmy,cmx = tuple( [int(x) for x in ndimage.measurements.center_of_mass(each)] )
@@ -43,18 +44,19 @@ def get_base_texture(components , max_height , shape):
     return blocks
 
 # Path for data and output
-dataset = "/home/chrizandr/data/telugu_hand/"
+dataset = "/home/chrizandr/data/IAM_hand/"
 # All the files in the dataset
 files = os.listdir(dataset)
-
+#files = ["a-68.tif","a-58.tif","a-59.tif","a-49.tif","a-43.tif","a-48.tif","a-14.tif","a-12.tif","a-18.tif","a-68.tif","a-31.tif","a-32.tif","a-23.tif"]
 def extract(name):
     # Path for data and output
-    dataset = "/home/chrizandr/data/telugu_hand/"
-    output = "/home/chrizandr/data/temp2/"
+    dataset = "/home/chrizandr/data/IAM_hand/"
+    output = "/home/chrizandr/data/IAM_blocks/"
     # Check if the files are images
     if name[-4:] == ".png":
         print("Processing image : "+ name)
         img = cv2.imread(dataset + name , 0)
+        img = cv2.threshold(img , 0 , 1 , cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
         img = img[5:-5,5:-5]
         components = get_connected_components(img)
         components = refine(components,250)
@@ -64,11 +66,11 @@ def extract(name):
             blocks = get_base_texture(component, img.shape[0], 250)
             index = comps.index(component)
             # pdb.set_trace()
-            print index,
-            for i in range(5):
+            print index,len(blocks)
+            for i in range(len(blocks)):
                 cv2.imwrite(output  + name[0:-4] + '-' + str(i) + ".png" , blocks[i])
         print "Done"
-# extract("f-3.png")
+
 
 pool = multiprocessing.Pool(5)
 result = pool.map(extract, files)
