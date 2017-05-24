@@ -1,93 +1,100 @@
-import os
+"""Extract strokes from a given image."""
+
 import cv2
 from skimage.morphology import skeletonize_3d
 import matplotlib.pyplot as plt
-from skimage.util import invert
+import pickle
 import pdb
 import numpy as np
 
-#extract strokes
+
+def get_connected_components(img, activated):
+    """Return the connectedComponents of the image."""
+    nimg = cv2.connectedComponents(1-activated)[1]
+    # Get the connectedComponents
+    print("Getting the connectedComponents")
+    labels = set(np.unique(nimg))
+    labels.remove(0)
+    components = list()
+    # Extracting the components
+    for label in labels:
+        sub_region = (nimg == label).nonzero()
+        max_hor = sub_region[1].max()
+        min_hor = sub_region[1].min()
+        max_ver = sub_region[0].max()
+        min_ver = sub_region[0].min()
+        if refine(activated[min_ver:max_ver, min_hor:max_hor]):
+            region = img[min_ver:max_ver, min_hor:max_hor]
+            if max_hor - min_hor > 3 and max_ver - min_ver > 3:
+                components.append(region)
+    return components
+
+
+def refine(component):
+    """Filter out extremely small components."""
+    if component.sum() > 30:
+        return True
+    return False
+
+
 def match(img, kernel):
-    output = cv2.filter2D(img, -1, kernel)
-    print output
-    return len((output[1:-1,1:-1]==kernel.sum()).nonzero()[0])
+    """Return the activated pixel image."""
+    image = img
+    output = cv2.filter2D(1-img, -1, kernel)
+    x, y = (output == kernel.sum()).nonzero()
+    for i in range(len(x)):
+        if x[i] != 0 and y[i] != 0:
+            try:
+                image[x[i]-1:x[i]+2, y[i]-1:y[i]+2] = np.ones((3, 3), dtype=np.uint8)
+            except:
+                continue
+    return image
 
-cords8 = [[(-1,1)], [(-1,0)], [(-1,-1)], [(0,-1)], [(1,-1)], [(1,0)], [(1,1)], [(0,1)]]
 
-cords16 = [[(-1,1),(-2,2)], [(-1,0),(-2,0)], [(-1,-1),(-2,-2)],
-            [(0,-1),(0,-2)], [(1,-1),(2,-2)], [(1,0),(2,0)],
-            [(1,1),(2,2)], [(0,1),(0,2)]]
+def active_regions(skeleton):
+    """Find the active regions in the image."""
+    img = skeleton
+    for filt in bank:
+        print("Processing bank")
+        img = match(img, filt)
+    return img
 
-cords32 = [[(-1,1),(-2,2),(-3,3)], [(-1,0),(-2,0),(-3,0)], [(-1,-1),(-2,-2),(-3,-3)],
-            [(0,-1),(0,-2),(0,-3)], [(1,-1),(2,-2),(3,-3)], [(1,0),(2,0),(3,0)],
-            [(1,1),(2,2),(3,3)], [(0,1),(0,2),(0,3)]]
 
-shape = (7,7)
-bank_32 = list()
-filters_32 = list()
-for cords in cords32:
-    filt = np.zeros(shape , dtype = np.uint8)
-    for point in cords:
-        x = point[0]
-        y = point[1]
-        filt[shape[0]/2, shape[1]/2] = 1
-        filt[(shape[0]/2 + x),(shape[1]/2 + y)] = 1
-    filters_32.append(filt)
+def skeletonize(img):
+    """Return 1 pixel thick skeleton of binary image."""
+    skeleton = skeletonize_3d(1-img)
+    skeleton = 1 - cv2.threshold(skeleton, 0, 1, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
+    return skeleton
 
-# 3 junctions
-for i in filters_32:
-    for j in filters_32:
-        for k in filters_32:
-            if (i!=j).any() and (j!=k).any() and (i!=k).any():
-                bank_32.append(i+j+k)
-# 4 junctions
-for i in filters_32:
-    for j in filters_32:
-        for k in filters_32:
-            if (i!=j).any() and (j!=k).any() and (i!=k).any():
-                for l in filters_32:
-                    if (l!=i).any() and (l!=j).any() and (l!=k).any():
-                        bank_32.append(i+j+k+l)
-# Removing duplicates if any
-bank = [bank_32[0]]
-for filt in bank_32:
-    flag = 0
-    for f in bank:
-        if (f==filt).all():
-            flag = 1
-    if not flag:
-        bank.append(filt)
 
-# Making center = 1
-for filt in bank:
-    filt[3,3] = 1
-
-pdb.set_trace()
-
-data_path = "/home/sanny/Documents/clustering_model/data/"
-output_file ="/home/chrizandr/Texture_Analysis/noise/Features/telugu_ng_5.csv"
-
-folderlist = os.listdir(data_path)
-folderlist.sort()
-
-features = list()
-for name in folderlist:
-    if name[-4:]=='.png':
-        print("Processing "+ name)
-
-        img_name = data_path + name
-        img = cv2.imread(img_name, 0)
-        gray_img = cv2.threshold(img , 0 , 1 , cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
-
-        gray_img= 1-gray_img
-        skeleton = skeletonize_3d(gray_img)
-        skeleton = cv2.threshold(skeleton , 0 , 1 , cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
-        skeleton = 1 - skeleton
-        #img2 = thin(gray_img)
-        plt.imshow(skeleton, cmap="gray")
+def extract_strokes(img):
+    """Extract strokes from a given image."""
+    binary_img = cv2.threshold(img, 0, 1, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
+    skeleton = skeletonize(binary_img)
+    activated = active_regions(skeleton)
+    components = get_connected_components(binary_img, activated)
+    for comp in components:
+        plt.imshow(comp, 'gray')
         plt.show()
-        feature = list()
-        for kernel in bank:
-            output = cv2.filter2D(skeleton, -1, kernel)
-            plt.imshow(output, cmap="gray")
-            plt.show()
+    pdb.set_trace()
+
+
+bank = pickle.load(open("banks/Py2.7/J34_3.pkl", "rb"))
+
+# data_path = "/home/sanny/Documents/clustering_model/data/"
+# output_file = "/home/chrizandr/Texture_Analysis/noise/Features/telugu_ng_5.csv"
+#
+# folderlist = os.listdir(data_path)
+# folderlist.sort()
+
+# features = list()
+# for name in folderlist:
+#     if name[-4:]=='.png':
+
+# img_name = data_path + name
+
+img = cv2.imread("test1.png", 0)
+extract_strokes(img)
+skeleton = skeletonize(img)
+active = active_regions(skeleton)
+pdb.set_trace()
