@@ -8,7 +8,7 @@ import pdb
 import numpy as np
 
 
-def get_connected_components(img, activated):
+def get_connected_components(activated):
     """Return the connectedComponents of the image."""
     nimg = cv2.connectedComponents(1-activated)[1]
     # Get the connectedComponents
@@ -23,10 +23,11 @@ def get_connected_components(img, activated):
         min_hor = sub_region[1].min()
         max_ver = sub_region[0].max()
         min_ver = sub_region[0].min()
-        if refine(activated[min_ver:max_ver, min_hor:max_hor]):
-            region = img[min_ver:max_ver, min_hor:max_hor]
-            if max_hor - min_hor > 3 and max_ver - min_ver > 3:
-                components.append(region)
+        img = np.ones((max_ver-min_ver+1, max_hor-min_hor+1), dtype=np.uint8)
+        img[sub_region[0]-min_ver, sub_region[1]-min_hor] = 0
+        if max_hor - min_hor > 5 and max_ver - min_ver > 5:
+            if refine(img):
+                components.append(img)
     return components
 
 
@@ -72,7 +73,7 @@ def extract_strokes(img):
     binary_img = cv2.threshold(img, 0, 1, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
     skeleton = skeletonize(binary_img)
     activated = active_regions(skeleton)
-    components = get_connected_components(binary_img, activated)
+    components = get_connected_components(activated)
     for comp in components:
         plt.imshow(comp, 'gray')
         plt.show()
@@ -80,19 +81,6 @@ def extract_strokes(img):
 
 
 bank = pickle.load(open("banks/Py2.7/J34_3.pkl", "rb"))
-
-# data_path = "/home/sanny/Documents/clustering_model/data/"
-# output_file = "/home/chrizandr/Texture_Analysis/noise/Features/telugu_ng_5.csv"
-#
-# folderlist = os.listdir(data_path)
-# folderlist.sort()
-
-# features = list()
-# for name in folderlist:
-#     if name[-4:]=='.png':
-
-# img_name = data_path + name
-
 img = cv2.imread("test1.png", 0)
 extract_strokes(img)
 skeleton = skeletonize(img)
