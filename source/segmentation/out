@@ -1,0 +1,607 @@
+--Return--
+> /home/sanny/honours/Texture_Analysis/source/segmentation/tblocks.py(77)<module>()->None
+-> pdb.set_trace()
+(Pdb) Processing image : a-49.png
+Processing image : d-19.png
+Processing image : h-12.png
+Processing image : c-11.png
+Greater exists
+Processing image : a-47.png
+Greater exists
+Processing image : e-13.png
+Processing image : b-24.png
+Processing image : c-45.png
+Processing image : f-0.png
+Processing image : b-33.png
+Processing image : b-20.png
+Processing image : d-33.png
+Processing image : e-42.png
+Processing image : b-54.png
+Processing image : c-35.png
+Processing image : c-5.png
+Processing image : f-1.png
+Processing image : b-26.png
+Processing image : c-21.png
+Processing image : b-25.png
+Processing image : c-33.png
+Processing image : e-24.png
+Processing image : a-54.png
+Processing image : a-31.png
+Greater exists
+Processing image : c-13.png
+Processing image : b-52.png
+Processing image : e-53.png
+Processing image : b-16.png
+Processing image : d-32.png
+Processing image : e-4.png
+Processing image : a-12.png
+Processing image : f-19.png
+Processing image : d-28.png
+Processing image : b-39.png
+Processing image : c-28.png
+Greater exists
+Processing image : c-2.png
+Processing image : f-22.png
+Processing image : a-46.png
+Greater exists
+Greater exists
+Processing image : g-9.png
+Processing image : b-58.png
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Processing image : g-5.png
+Processing image : c-31.png
+Processing image : d-27.png
+Processing image : h-37.png
+Processing image : a-21.png
+Processing image : b-42.png
+Processing image : g-23.png
+Processing image : g-19.png
+Processing image : e-55.png
+Processing image : g-31.png
+Processing image : a-39.png
+Greater exists
+Processing image : h-25.png
+Processing image : f-47.png
+Processing image : h-19.png
+Processing image : h-40.png
+Greater exists
+Greater exists
+Processing image : f-25.png
+Processing image : h-3.png
+Processing image : e-50.png
+Processing image : c-29.png
+Greater exists
+Greater exists
+Processing image : a-50.png
+Greater exists
+Greater exists
+Processing image : g-46.png
+Processing image : e-17.png
+Processing image : c-9.png
+Processing image : c-64.png
+Processing image : f-33.png
+Processing image : e-3.png
+Processing image : e-30.png
+Processing image : a-15.png
+Processing image : b-34.png
+Processing image : a-20.png
+Processing image : c-60.png
+Processing image : b-7.png
+Processing image : a-9.png
+Greater exists
+Greater exists
+Processing image : c-51.png
+Greater exists
+Greater exists
+Processing image : d-0.png
+Processing image : b-3.png
+Processing image : c-42.png
+Processing image : g-45.png
+Processing image : c-26.png
+Processing image : e-40.png
+Processing image : f-34.png
+Processing image : f-9.png
+Processing image : b-14.png
+Processing image : b-43.png
+Processing image : d-15.png
+Greater exists
+Processing image : e-58.png
+Processing image : f-23.png
+Processing image : h-11.png
+Processing image : b-32.png
+Processing image : c-54.png
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Processing image : c-27.png
+Greater exists
+Greater exists
+Processing image : a-51.png
+Greater exists
+Processing image : d-4.png
+Processing image : g-42.png
+Processing image : g-10.png
+Processing image : g-36.png
+Processing image : h-39.png
+Processing image : c-40.png
+Processing image : f-18.png
+Greater exists
+Processing image : b-22.png
+Processing image : e-11.png
+Processing image : g-28.png
+Processing image : c-52.png
+Greater exists
+Greater exists
+Greater exists
+Processing image : e-2.png
+Processing image : d-31.png
+Processing image : a-59.png
+Greater exists
+Processing image : f-2.png
+Processing image : c-59.png
+Processing image : b-53.png
+Processing image : c-50.png
+Processing image : a-23.png
+Processing image : d-5.png
+Processing image : a-42.png
+Processing image : c-43.png
+Processing image : f-21.png
+Processing image : g-14.png
+Processing image : g-17.png
+Processing image : h-4.png
+Processing image : g-24.png
+Processing image : e-15.png
+Greater exists
+Processing image : d-8.png
+Greater exists
+Processing image : g-37.png
+Processing image : a-48.png
+Greater exists
+Processing image : d-44.png
+Processing image : b-63.png
+Processing image : g-47.png
+Processing image : h-32.png
+Processing image : g-21.png
+Processing image : d-34.png
+Processing image : c-47.png
+Processing image : c-16.png
+Greater exists
+Processing image : e-54.png
+Processing image : e-27.png
+Processing image : d-26.png
+Greater exists
+Processing image : e-14.png
+Processing image : b-50.png
+Processing image : d-46.png
+Processing image : a-24.png
+Processing image : c-10.png
+Processing image : b-13.png
+Processing image : e-16.png
+Processing image : f-24.png
+Processing image : c-58.png
+Processing image : a-27.png
+Processing image : d-43.png
+Processing image : d-3.png
+Processing image : e-51.png
+Processing image : f-43.png
+Processing image : e-8.png
+Processing image : b-8.png
+Processing image : c-17.png
+Processing image : g-1.png
+Processing image : d-36.png
+Processing image : d-41.png
+Processing image : c-30.png
+Processing image : b-27.png
+Processing image : f-14.png
+Processing image : a-13.png
+Processing image : a-0.png
+Processing image : g-43.png
+Processing image : f-26.png
+Processing image : c-1.png
+Processing image : a-6.png
+Processing image : h-17.png
+Processing image : b-5.png
+Processing image : a-5.png
+Processing image : d-10.png
+Processing image : h-13.png
+Processing image : e-37.png
+Processing image : b-4.png
+Processing image : d-7.png
+Greater exists
+Greater exists
+Greater exists
+Processing image : d-38.png
+Processing image : e-62.png
+Processing image : h-30.png
+Processing image : d-42.png
+Processing image : a-22.png
+Processing image : b-48.png
+Processing image : a-35.png
+Processing image : d-22.png
+Processing image : e-59.png
+Processing image : b-21.png
+Processing image : d-18.png
+Greater exists
+Greater exists
+Processing image : b-45.png
+Processing image : a-56.png
+Processing image : e-5.png
+Processing image : h-34.png
+Processing image : e-7.png
+Processing image : g-13.png
+Processing image : d-9.png
+Processing image : e-28.png
+Processing image : b-57.png
+Greater exists
+Greater exists
+Processing image : h-5.png
+Processing image : f-13.png
+Processing image : e-41.png
+Processing image : a-61.png
+Greater exists
+Processing image : e-52.png
+Processing image : c-57.png
+Processing image : b-30.png
+Processing image : h-27.png
+Processing image : c-67.png
+Processing image : b-15.png
+Processing image : h-6.png
+Processing image : b-60.png
+Processing image : e-12.png
+Processing image : e-29.png
+Processing image : e-25.png
+Processing image : g-2.png
+Processing image : c-62.png
+Processing image : a-28.png
+Processing image : c-32.png
+Processing image : c-25.png
+Processing image : b-49.png
+Processing image : c-44.png
+Processing image : d-6.png
+Greater exists
+Greater exists
+Greater exists
+Processing image : a-43.png
+Processing image : a-1.png
+Processing image : f-45.png
+Processing image : f-31.png
+Processing image : f-49.png
+Processing image : e-38.png
+Processing image : h-16.png
+Processing image : g-29.png
+Processing image : h-7.png
+Processing image : e-19.png
+Processing image : f-12.png
+Processing image : e-32.png
+Processing image : h-1.png
+Processing image : e-56.png
+Processing image : a-26.png
+Processing image : c-7.png
+Processing image : d-16.png
+Greater exists
+Greater exists
+Processing image : f-32.png
+Processing image : b-11.png
+Processing image : a-37.png
+Processing image : b-56.png
+Processing image : b-2.png
+Processing image : a-30.png
+Greater exists
+Processing image : d-37.png
+Processing image : e-0.png
+Processing image : d-21.png
+Processing image : f-29.png
+Processing image : g-39.png
+Greater exists
+Processing image : d-20.png
+Processing image : f-7.png
+Processing image : g-7.png
+Processing image : c-46.png
+Processing image : f-44.png
+Processing image : a-62.png
+Greater exists
+Processing image : e-1.png
+Processing image : a-32.png
+Processing image : f-48.png
+Processing image : d-30.png
+Processing image : b-19.png
+Processing image : b-46.png
+Processing image : d-12.png
+Processing image : b-65.png
+Processing image : g-20.png
+Processing image : d-29.png
+Processing image : a-10.png
+Greater exists
+Processing image : a-53.png
+Processing image : a-40.png
+Processing image : g-38.png
+Processing image : h-41.png
+Processing image : d-23.png
+Processing image : f-3.png
+Processing image : b-35.png
+Greater exists
+Processing image : b-38.png
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Processing image : b-44.png
+Greater exists
+Processing image : g-41.png
+Processing image : a-55.png
+Processing image : b-28.png
+Processing image : f-11.png
+Processing image : a-18.png
+Processing image : c-23.png
+Processing image : g-44.png
+Processing image : e-43.png
+Processing image : e-34.png
+Processing image : c-56.png
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Processing image : b-31.png
+Greater exists
+Processing image : e-47.png
+Processing image : b-61.png
+Processing image : h-36.png
+Processing image : c-68.png
+Processing image : c-0.png
+Processing image : f-16.png
+Processing image : b-17.png
+Processing image : h-18.png
+Processing image : b-36.png
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Processing image : c-4.png
+Processing image : g-33.png
+Processing image : f-20.png
+Processing image : d-25.png
+Greater exists
+Greater exists
+Processing image : b-0.png
+Processing image : a-11.png
+Greater exists
+Greater exists
+Greater exists
+Processing image : a-41.png
+Processing image : f-40.png
+Processing image : g-4.png
+Processing image : a-38.png
+Processing image : f-27.png
+Processing image : f-30.png
+Processing image : a-3.png
+Processing image : g-11.png
+Processing image : e-36.png
+Processing image : g-35.png
+Processing image : h-31.png
+Processing image : e-10.png
+Processing image : b-6.png
+Processing image : h-35.png
+Processing image : g-25.png
+Processing image : b-40.png
+Greater exists
+Greater exists
+Processing image : g-27.png
+Processing image : b-29.png
+Processing image : b-51.png
+Processing image : g-22.png
+Processing image : c-24.png
+Processing image : f-41.png
+Processing image : f-35.png
+Processing image : e-31.png
+Processing image : e-23.png
+Processing image : e-49.png
+Processing image : h-20.png
+Processing image : h-14.png
+Processing image : a-58.png
+Processing image : f-39.png
+Processing image : f-17.png
+Processing image : c-48.png
+Processing image : e-48.png
+Processing image : e-61.png
+Processing image : a-19.png
+Processing image : h-22.png
+Processing image : b-64.png
+Processing image : h-33.png
+Processing image : h-38.png
+Processing image : c-41.png
+Processing image : a-8.png
+Processing image : e-22.png
+Processing image : a-17.png
+Processing image : g-15.png
+Processing image : g-0.png
+Processing image : g-34.png
+Processing image : a-7.png
+Processing image : e-35.png
+Processing image : f-5.png
+Processing image : h-10.png
+Processing image : d-47.png
+Processing image : e-46.png
+Processing image : f-10.png
+Processing image : e-6.png
+Processing image : c-65.png
+Processing image : c-49.png
+Processing image : a-2.png
+Processing image : c-19.png
+Processing image : d-39.png
+Processing image : d-40.png
+Processing image : h-26.png
+Processing image : h-29.png
+Processing image : c-8.png
+Processing image : g-6.png
+Processing image : f-4.png
+Processing image : h-9.png
+Processing image : a-14.png
+Processing image : g-26.png
+Processing image : b-41.png
+Greater exists
+Greater exists
+Processing image : g-32.png
+Processing image : b-10.png
+Processing image : a-29.png
+Processing image : a-44.png
+Processing image : h-0.png
+Processing image : c-55.png
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Processing image : e-21.png
+Processing image : h-28.png
+Processing image : a-45.png
+Processing image : c-61.png
+Processing image : a-57.png
+Processing image : f-42.png
+Processing image : d-14.png
+Greater exists
+Processing image : c-3.png
+Processing image : g-30.png
+Processing image : d-45.png
+Processing image : a-16.png
+Processing image : f-46.png
+Processing image : c-37.png
+Greater exists
+Processing image : e-39.png
+Processing image : f-15.png
+Processing image : f-50.png
+Processing image : b-55.png
+Processing image : a-36.png
+Processing image : b-47.png
+Processing image : b-62.png
+Processing image : g-12.png
+Processing image : c-66.png
+Processing image : e-20.png
+Processing image : g-3.png
+Processing image : h-23.png
+Processing image : e-9.png
+Processing image : f-37.png
+Processing image : a-25.png
+Processing image : c-63.png
+Processing image : f-6.png
+Processing image : a-34.png
+Processing image : e-60.png
+Processing image : h-21.png
+Processing image : b-23.png
+Processing image : g-8.png
+Processing image : e-45.png
+Processing image : c-38.png
+Processing image : b-37.png
+Greater exists
+Greater exists
+Greater exists
+Processing image : c-12.png
+Processing image : e-33.png
+Processing image : g-18.png
+Processing image : d-11.png
+Processing image : e-57.png
+Processing image : d-17.png
+Greater exists
+Processing image : c-14.png
+Processing image : d-13.png
+Greater exists
+Greater exists
+Processing image : c-6.png
+Processing image : a-52.png
+Greater exists
+Processing image : e-26.png
+Processing image : c-53.png
+Greater exists
+Greater exists
+Processing image : b-18.png
+Processing image : f-36.png
+Processing image : c-22.png
+Processing image : f-38.png
+Processing image : g-16.png
+Processing image : d-2.png
+Processing image : a-33.png
+Processing image : e-18.png
+Processing image : b-59.png
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Greater exists
+Processing image : c-34.png
+Processing image : d-35.png
+Processing image : f-28.png
+Processing image : e-44.png
+Processing image : h-24.png
+Processing image : d-1.png
+Processing image : c-36.png
+Greater exists
+Processing image : h-2.png
+Processing image : c-18.png
+Processing image : a-4.png
+Processing image : b-1.png
+Processing image : f-8.png
+Processing image : a-60.png
+Greater exists
+Greater exists
+Processing image : b-12.png
+Processing image : d-24.png
+Greater exists
+Processing image : c-15.png
+Processing image : g-40.png
+Processing image : c-39.png
+Processing image : h-8.png
+Processing image : h-15.png
+Processing image : c-20.png
+Processing image : b-9.png
