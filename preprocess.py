@@ -2,7 +2,7 @@
 
 import cv2
 from skimage.morphology import skeletonize_3d
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import pickle
 import pdb
 import numpy as np
@@ -27,6 +27,10 @@ def get_connected_components(activated):
         img[sub_region[0]-min_ver, sub_region[1]-min_hor] = 0
         if max_hor - min_hor > 5 and max_ver - min_ver > 5:
             if refine(img):
+                img = np.vstack((img, np.ones((1, img.shape[1]))))
+                img = np.vstack((np.ones((1, img.shape[1])), img))
+                img = np.hstack((img, np.ones((img.shape[0], 1))))
+                img = np.hstack((np.ones((img.shape[0], 1)), img))
                 components.append(img)
     return components
 
@@ -74,15 +78,13 @@ def extract_strokes(img):
     skeleton = skeletonize(binary_img)
     activated = active_regions(skeleton)
     components = get_connected_components(activated)
-    for comp in components:
-        plt.imshow(comp, 'gray')
-        plt.show()
-    pdb.set_trace()
+    return components
 
 
 bank = pickle.load(open("banks/Py2.7/J34_3.pkl", "rb"))
 img = cv2.imread("test1.png", 0)
-extract_strokes(img)
-skeleton = skeletonize(img)
-active = active_regions(skeleton)
+strokes = extract_strokes(img)
+print("Writing Stokes")
+for i in range(len(strokes)):
+    cv2.imwrite("output/" + str(i) + ".tiff", strokes[i] * 255)
 pdb.set_trace()
