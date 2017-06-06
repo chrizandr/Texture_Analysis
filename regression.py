@@ -28,10 +28,12 @@ def feature(img):
     for i in np.linspace(0, img.shape[1], 100):
         point_x.append(i)
         point_y.append(int(clf.predict(i)))
-    #plt.scatter(x, y)
-    #plt.scatter(point_x, point_y, color='red')
-    #plt.show()
-    return point_y
+    # plt.scatter(x, y)
+    # plt.scatter(point_x, point_y, color='red')
+    # plt.show()
+    x, y, w, h = cv2.boundingRect(img)
+    return np.array(point_y)/float(h)
+
 
 data_path = "/home/sanny/honours/Texture_Analysis/output/"
 folderlist = os.listdir(data_path)
@@ -40,8 +42,8 @@ folderlist.sort()
 output_file = open('features.csv', 'w')
 
 for name in folderlist:
-    if name[-5:]=='.tiff':
-        print("Processing "+ name)
+    if name[-5:] == '.tiff':
+        print("Processing " + name)
         img = cv2.imread(data_path+name, 0)
         f = ','.join(str(val) for val in feature(img))
         output_file.write(str(f)+","+name+'\n')
