@@ -1,6 +1,6 @@
 __pycache__/
 *.pyc
 output/*
-features_xy.csv
+features.csv
 97clusters/*
 reps/*
