@@ -6,13 +6,14 @@ from skimage.morphology import skeletonize_3d
 import pickle
 import pdb
 import numpy as np
+import os
+import multiprocessing
 
 
 def get_connected_components(activated):
     """Return the connectedComponents of the image."""
     nimg = cv2.connectedComponents(1-activated)[1]
     # Get the connectedComponents
-    print("Getting the connectedComponents")
     labels = set(np.unique(nimg))
     labels.remove(0)
     components = list()
@@ -60,7 +61,6 @@ def active_regions(skeleton):
     """Find the active regions in the image."""
     img = skeleton
     for filt in bank:
-        print("Processing bank")
         img = match(img, filt)
     return img
 
@@ -72,19 +72,32 @@ def skeletonize(img):
     return skeleton
 
 
-def extract_strokes(img):
+def extract_strokes(img_name):
     """Extract strokes from a given image."""
-    binary_img = cv2.threshold(img, 0, 1, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
-    skeleton = skeletonize(binary_img)
-    activated = active_regions(skeleton)
-    components = get_connected_components(activated)
-    return components
+    if img_name[-4:] == ".png":
+        img = cv2.imread("/home/chris/data/telugu_hand/" + img_name, 0)
+        binary_img = cv2.threshold(img, 0, 1, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
+        skeleton = skeletonize(binary_img)
+        activated = active_regions(skeleton)
+        print("Extracting the strokes for " + img_name)
+        components = get_connected_components(activated)
+        folder = "/home/chris/data/strokes/" + img_name[0:-4] + '/'
+        print("Writing the strokes for " + img_name)
+        os.makedirs(folder)
+        for i in range(len(components)):
+            cv2.imwrite(folder + str(i) + ".tiff", components[i])
+        return [x.shape for x in components]
 
 
 bank = pickle.load(open("banks/Py2.7/J34_3.pkl", "rb"))
-img = cv2.imread("test1.png", 0)
-strokes = extract_strokes(img)
-print("Writing Stokes")
-for i in range(len(strokes)):
-    cv2.imwrite("output/" + str(i) + ".tiff", strokes[i] * 255)
+data = "/home/chris/data/telugu_hand"
+folderlist = os.listdir(data)
+folderlist.sort()
+
+pool = multiprocessing.Pool(6)
+result = pool.map(extract_strokes, folderlist)
+
 pdb.set_trace()
+
+# for i in range(len(strokes)):
+#     cv2.imwrite("output/" + str(i) + ".tiff", strokes[i] * 255)
