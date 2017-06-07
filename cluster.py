@@ -6,6 +6,7 @@ from sklearn.cluster import KMeans
 import pdb
 from shutil import copyfile
 import os
+from collections import Counter
 
 
 def cluster(X, n_clusters, file_name):
@@ -15,6 +16,7 @@ def cluster(X, n_clusters, file_name):
     output = kmeans.labels_
     folders = set(output)
     print("Making stroke folders...")
+    pdb.set_trace()
     for f in folders:
         os.makedirs("/home/chris/data/clusters/" + str(f) + '/')
     print("Calculating distributions and copying files...")
@@ -24,6 +26,18 @@ def cluster(X, n_clusters, file_name):
         src = "/home/chris/data/strokes/" + key + '/' + file_name[i].split('-')[2]
         dest = "/home/chris/data/clusters/" + str(output[i]) + '/' + file_name[i]
         copyfile(src, dest)
+
+        f = open("distributions.csv", "w")
+        for key in keymap:
+            count = Counter(keymap[key])
+            feat = list()
+            for i in range(n_clusters):
+                if i in count:
+                    feat.append(count[i])
+                else:
+                    feat.append(0)
+            feat_str = ','.join(str(val) for val in feat)
+            f.write(feat_str + ',' + key + '\n')
 
     return None
 
