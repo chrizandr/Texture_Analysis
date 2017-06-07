@@ -51,8 +51,7 @@ def match(img, kernel):
     for i in range(len(x)):
         if x[i] != 0 and y[i] != 0:
             try:
-                image[x[i]-1:x[i]+2, y[i]-1:y[i]+2] = np.ones((3, 3),
-                                                              dtype=np.uint8)
+                image[x[i]-1:x[i]+2, y[i]-1:y[i]+2] = np.ones((3, 3), dtype=np.uint8)
             except:
                 continue
     return image
@@ -69,8 +68,7 @@ def active_regions(skeleton):
 def skeletonize(img):
     """Return 1 pixel thick skeleton of binary image."""
     skeleton = skeletonize_3d(1-img)
-    skeleton = 1 - cv2.threshold(skeleton, 0, 1,
-                                 cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
+    skeleton = 1 - cv2.threshold(skeleton, 0, 1, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
     return skeleton
 
 
@@ -87,13 +85,9 @@ def extract_strokes(img_name):
         print("Writing the strokes for " + img_name)
         os.makedirs(folder)
         for i in range(len(components)):
-            cv2.imwrite(folder + str(i) + ".tiff", components[i])
+            cv2.imwrite(folder + str(i) + ".tiff", components[i] * 255)
         return [x.shape for x in components]
 
-
-data_path = "/home/sanny/honours/50data/"
-folderlist = os.listdir(data_path)
-folderlist.sort()
 
 bank = pickle.load(open("banks/Py2.7/J34_3.pkl", "rb"))
 data = "/home/chris/data/telugu_hand"
@@ -104,6 +98,3 @@ pool = multiprocessing.Pool(6)
 result = pool.map(extract_strokes, folderlist)
 
 pdb.set_trace()
-
-# for i in range(len(strokes)):
-#     cv2.imwrite("output/" + str(i) + ".tiff", strokes[i] * 255)
