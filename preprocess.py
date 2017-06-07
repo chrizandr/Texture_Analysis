@@ -6,6 +6,7 @@ from skimage.morphology import skeletonize_3d
 import pickle
 import pdb
 import numpy as np
+import os
 
 
 def get_connected_components(activated):
@@ -50,7 +51,8 @@ def match(img, kernel):
     for i in range(len(x)):
         if x[i] != 0 and y[i] != 0:
             try:
-                image[x[i]-1:x[i]+2, y[i]-1:y[i]+2] = np.ones((3, 3), dtype=np.uint8)
+                image[x[i]-1:x[i]+2, y[i]-1:y[i]+2] = np.ones((3, 3),
+                                                              dtype=np.uint8)
             except:
                 continue
     return image
@@ -68,23 +70,35 @@ def active_regions(skeleton):
 def skeletonize(img):
     """Return 1 pixel thick skeleton of binary image."""
     skeleton = skeletonize_3d(1-img)
-    skeleton = 1 - cv2.threshold(skeleton, 0, 1, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
+    skeleton = 1 - cv2.threshold(skeleton, 0, 1,
+                                 cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
     return skeleton
 
 
 def extract_strokes(img):
     """Extract strokes from a given image."""
-    binary_img = cv2.threshold(img, 0, 1, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
+    binary_img = cv2.threshold(img, 0, 1,
+                               cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
     skeleton = skeletonize(binary_img)
     activated = active_regions(skeleton)
     components = get_connected_components(activated)
     return components
 
 
+data_path = "/home/sanny/honours/50data/"
+folderlist = os.listdir(data_path)
+folderlist.sort()
+
 bank = pickle.load(open("banks/Py2.7/J34_3.pkl", "rb"))
-img = cv2.imread("test1.png", 0)
-strokes = extract_strokes(img)
-print("Writing Stokes")
-for i in range(len(strokes)):
-    cv2.imwrite("output/" + str(i) + ".tiff", strokes[i] * 255)
+output_file = open('features_xy.csv', 'w')
+
+for name in folderlist:
+    if name[-4:] == '.png':
+        print("Processing " + name)
+        img = cv2.imread(data_path + name, 0)
+        strokes = extract_strokes(img)
+        print("Writing Stokes")
+        for i in range(len(strokes)):
+            cv2.imwrite("output/" + name + "_" + str(i) + ".tiff",
+                        strokes[i] * 255)
 pdb.set_trace()
