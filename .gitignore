@@ -4,3 +4,4 @@ output/*
 features.csv
 97clusters/*
 reps/*
+paths.py
