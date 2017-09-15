@@ -34,7 +34,9 @@ def feature(img, n, m):
             lb_index = (x == lb).nonzero()[0][0]
             ub_index = (x == ub).nonzero()[0][0]
         except:
+            print "Exception in feature()!"
             pdb.set_trace()
+         
         j = get_line([lb, ub], [y[lb_index], y[ub_index]], i, "x")
         feature.append(j)
 
@@ -47,7 +49,7 @@ def feature(img, n, m):
         feature.append(i)
     return feature
 
-
+'''
 data_path = "/home/chris/data/strokes/"
 folders = os.listdir(data_path)
 folders.sort()
@@ -73,3 +75,4 @@ for name in folderlist:
 
         output_file.write(str(f)+","+name+'\n')
 output_file.close()
+'''
