@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+output/*
+features.csv
+97clusters/*
+reps/*
+paths.py
+output/*
