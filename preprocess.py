@@ -75,13 +75,13 @@ def skeletonize(img):
 def extract_strokes(img_name):
     """Extract strokes from a given image."""
     if img_name[-4:] == ".png":
-        img = cv2.imread("/home/chris/data/telugu_hand/" + img_name, 0)
+        img = cv2.imread("/home/chrizandr/data/writing_segment/" + img_name, 0)
         binary_img = cv2.threshold(img, 0, 1, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
         skeleton = skeletonize(binary_img)
         activated = active_regions(skeleton)
         print("Extracting the strokes for " + img_name)
         components = get_connected_components(activated)
-        folder = "/home/chris/data/strokes/" + img_name[0:-4] + '/'
+        folder = "/home/chrizandr/data/strokes/" + img_name[0:-4] + '/'
         print("Writing the strokes for " + img_name)
         os.makedirs(folder)
         for i in range(len(components)):
@@ -90,7 +90,7 @@ def extract_strokes(img_name):
 
 
 bank = pickle.load(open("banks/Py2.7/J34_3.pkl", "rb"))
-data = "/home/chris/data/telugu_hand"
+data = "/home/chrizandr/data/writing_segment/"
 folderlist = os.listdir(data)
 folderlist.sort()
 

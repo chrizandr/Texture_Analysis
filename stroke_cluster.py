@@ -7,28 +7,29 @@ import pdb
 from shutil import copyfile
 import os
 from collections import Counter
-
+import pickle
 
 def cluster(X, n_clusters, file_name):
     """Cluster strokes, calculate distribution, group images according to clusters."""
     print("Clustering the strokes...")
     kmeans = KMeans(n_clusters=n_clusters, init='k-means++', ).fit(X)
+    pickle.dump(kmeans, open('cluster.p', 'wb'))
     output = kmeans.labels_
     folders = set(output)
     print("Making stroke folders...")
-    pdb.set_trace()
-    for f in folders:
-        os.makedirs("/home/chris/data/clusters/" + str(f) + '/')
+    #pdb.set_trace()
+    #for f in folders:
+    #    os.makedirs("/home/chrizandr/data/clusters/" + str(f) + '/')
     print("Calculating distributions and copying files...")
-    for i in range(X.shape[0]):
-        key = file_name[i].split('-')[0] + '-' + file_name[i].split('-')[1]
-        keymap[key].append(output[i])
-        src = "/home/chris/data/strokes/" + key + '/' + file_name[i].split('-')[2]
-        dest = "/home/chris/data/clusters/" + str(output[i]) + '/' + file_name[i]
-        copyfile(src, dest)
+    #for i in range(X.shape[0]):
+    #    key = file_name[i].split('-')[0] + '-' + file_name[i].split('-')[1]
+    #    keymap[key].append(output[i])
+    #    src = "/home/chris/data/strokes/" + key + '/' + file_name[i].split('-')[2]
+    #    dest = "/home/chris/data/clusters/" + str(output[i]) + '/' + file_name[i]
+    #    copyfile(src, dest)
 
-        f = open("distributions.csv", "w")
-        for key in keymap:
+    f = open("distributions.csv", "w")
+    for key in keymap:
             count = Counter(keymap[key])
             feat = list()
             for i in range(n_clusters):
@@ -64,5 +65,5 @@ keymap = dict()
 for f in files:
     keymap[f] = list()
 
-cluster(X, 100, strokes)
+cluster(X, 58, strokes)
 pdb.set_trace()
