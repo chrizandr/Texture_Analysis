@@ -40,6 +40,6 @@ for filename in ["bangla"]:
         f.close()
         data_dir = "/home/chrizandr/Texture_Analysis/"
         name = "IAM_LDA"
-        evl = classify(data_dir + name + ".csv" , 1)
-        results.append((i,evl))
+        evl = classify(data_dir + name + ".csv", 1)
+        results.append((i, evl))
     pdb.set_trace()
