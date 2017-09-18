@@ -8,42 +8,36 @@ import pdb
 import numpy as np
 import os
 import multiprocessing
-import pickle
 import random
-from xy_fea import *
+from xy_fea import feature
 import scipy.misc
 
+
 def get_color_map(n):
+    """Returns color map for given number of colors."""
     random.seed()
     colormap = list()
-    colormap_img = np.ones((200,200,3))
+    colormap_img = np.ones((200, 200, 3))
     for i in range(n):
-        a = [random.randint(0,255), random.randint(0,255), random.randint(0,255)]
+        a = [random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)]
         while a not in colormap:
             colormap.append(a)
-    i=0
+    i = 0
     for each in colormap:
-        colormap_img[i:i+3,:,:] = each
-        i+=3
-    #plt.imshow(colormap_img)
-    #plt.show()
+        colormap_img[i:i+3, :, :] = each
+        i += 3
+    # plt.imshow(colormap_img)
+    # plt.show()
     return np.array(colormap)
 
-cluster = pickle.load(open("cluster.p","rb"))
-color_map = get_color_map(len(cluster.cluster_centers_))
 
-
-def colorize_strokes(activated):
-    """Colorize strokes based on clustering"""
+def colorize_strokes(activated, cluster, color_map):
+    """Colorize strokes based on clustering."""
     nimg = cv2.connectedComponents(1-activated)[1]
     colored_img = np.ones((nimg.shape[0], nimg.shape[1], 3))
     # Get the connectedComponents
     labels = set(np.unique(nimg))
     labels.remove(0)
-    components = list()
-    # Extracting the components
-    #cluster = pickle.load(open("cluster.p","rb"))
-    #color_map = get_color_map(len(cluster.cluster_centers_))
     for label in labels:
         sub_region = (nimg == label).nonzero()
         max_hor = sub_region[1].max()
@@ -59,12 +53,13 @@ def colorize_strokes(activated):
                 img = np.hstack((img, np.ones((img.shape[0], 1))))
                 img = np.hstack((np.ones((img.shape[0], 1)), img))
                 img = (img*255)[1:-1, 1:-1]
-                fea = feature(img, 20, 21)
-                #plt.imshow(img, cmap='gray')
-                #plt.show()
-                #pdb.set_trace()
-                color = color_map[cluster.predict(np.array(fea).reshape(1,-1))]
-                colored_img[sub_region[0],sub_region[1],:] = color
+                fea = feature(img, 25, 25)
+                plt.imshow(img, cmap='gray')
+                plt.show()
+                print(cluster.predict(np.array(fea).reshape(1, -1)))
+                # pdb.set_trace()
+                color = color_map[cluster.predict(np.array(fea).reshape(1, -1))]
+                colored_img[sub_region[0], sub_region[1], :] = color
     return colored_img
 
 
@@ -104,27 +99,31 @@ def skeletonize(img):
     return skeleton
 
 
-def extract_strokes(img_name):
+def extract_strokes(img_name, cluster, color_map):
     """Extract strokes from a given image."""
     if img_name[-4:] == ".png":
-        img = cv2.imread("/home/chrizandr/data/writing_segment/" + img_name, 0)
+        img = cv2.imread("/home/chrizandr/data/Telugu/handwritten/" + img_name, 0)
         binary_img = cv2.threshold(img, 0, 1, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
         skeleton = skeletonize(binary_img)
-        folder = "/home/chrizandr/data/skel_data/"
+        folder = "/home/chrizandr/data/Telugu/skel_data/"
         scipy.misc.toimage(255*skeleton).save(folder+img_name)
         activated = active_regions(skeleton)
-        clr_img = colorize_strokes(activated)
-        folder2 = "/home/chrizandr/data/clr_data/"
-        scipy.misc.toimage(255-clr_img, channel_axis=2).save(folder2+img_name)  
+        clr_img = colorize_strokes(activated, cluster, color_map)
+        folder2 = "/home/chrizandr/data/Telugu/clr_data/"
+        scipy.misc.toimage(255-clr_img, channel_axis=2).save(folder2+img_name)
 
 
-bank = pickle.load(open("banks/Py2.7/J34_3.pkl", "rb"))
-data = "/home/chrizandr/data/writing_segment/"
-folderlist = os.listdir(data)
-folderlist.sort()
+if __name__ == "__main__":
+    cluster = pickle.load(open("cluster.pkl", "rb"))
+    color_map = get_color_map(len(cluster.cluster_centers_))
+    bank = pickle.load(open("banks/Py2.7/J34_3.pkl", "rb"))
+    data = "/home/chrizandr/data/Telugu/handwritten/"
+    folderlist = os.listdir(data)
+    folderlist.sort()
 
-#extract_strokes("a-0.png")
-pool = multiprocessing.Pool(6)
-result = pool.map(extract_strokes, folderlist)
+    extract_strokes("a-0.png", cluster, color_map)
+    print("Done with a-0")
+    # pool = multiprocessing.Pool(6)
+    # result = pool.map(extract_strokes, folderlist)
 
-#pdb.set_trace()
+    # pdb.set_trace()
