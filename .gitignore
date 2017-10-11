@@ -6,3 +6,4 @@ features.csv
 reps/*
 paths.py
 output/*
+*.h5
