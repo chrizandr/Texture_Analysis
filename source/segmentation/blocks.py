@@ -17,7 +17,7 @@ def get_ids(name):
     return dictionary
 
 
-def refine(components, shape):
+def refine_by_size(components, shape):
     """Remove useless components."""
     useful = list()
     for component in components:
