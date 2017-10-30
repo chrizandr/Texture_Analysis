@@ -16,7 +16,7 @@ from keras.layers import GlobalAveragePooling2D
 from keras.preprocessing import image
 from keras import backend as K
 from keras.callbacks import ModelCheckpoint
-from keras.applications.imagenet_utils import decode_predictions
+# from keras.applications.imagenet_utils import decode_predictions
 from keras.applications.imagenet_utils import preprocess_input
 from keras.applications.imagenet_utils import _obtain_input_shape
 from keras.engine.topology import get_source_inputs
@@ -38,19 +38,19 @@ class DataGenerator(object):
         self.list_IDs = list_IDs
         self.labels = labels
 
-    def generate(self, labels):
+    def __next__(self):
         """Generate batches of samples."""
         while 1:
-            indexes = self.get_exploration_order(self.list_IDs)
+            indexes = self.__get_exploration_order()
 
             imax = int(len(indexes)/self.batch_size)
             for i in range(imax):
                 list_IDs_temp = [self.list_IDs[k] for k in indexes[i*self.batch_size:(i+1)*self.batch_size]]
-                X, y = self.data_generation(labels, list_IDs_temp)
+                X, y = self.__data_generation(self.labels, list_IDs_temp)
 
-                yield X, y
+                return X, y
 
-    def get_exploration_order(self):
+    def __get_exploration_order(self):
         """Generate order of exploration."""
         indexes = np.arange(len(self.list_IDs))
         if self.shuffle:
@@ -58,27 +58,27 @@ class DataGenerator(object):
 
         return indexes
 
-    def data_generation(self, labels, list_IDs_temp):
+    def __data_generation(self, labels, list_IDs_temp):
         """Generate data of batch_size samples."""
-        X = np.empty((self.batch_size, 1, self.dim_x, self.dim_y, self.dim_z))
+        X = np.empty((self.batch_size, self.dim_x, self.dim_y, self.dim_z))
         y = np.empty((self.batch_size), dtype=int)
 
         for i, ID in enumerate(list_IDs_temp):
             img = image.load_img(filepath + ID, target_size=(224, 224))
             x = image.img_to_array(img)
-            x = np.expand_dims(x, axis=0)
             x = preprocess_input(x)
-            X[i, 0, :, :, :] = x
+            X[i, :, :, :] = x
             name = ID.split('-')[0] + '-' + ID.split('-')[1]
             y[i] = labels[name]
 
-        return X, self.sparsify(y)
+        return X, sparsify(y, self.n_classes)
 
-    def sparsify(self, y):
-        """Return labels in binary NumPy array."""
-        # y[i] == j+1 if labels start from 0, else y[i] == j
-        return np.array([[1 if y[i] == j+1 else 0 for j in range(self.n_classes)]
-                         for i in range(y.shape[0])])
+
+def sparsify(y, n_classes=150):
+    """Return labels in binary NumPy array."""
+    # y[i] == j+1 if labels start from 0, else y[i] == j
+    return np.array([[1 if y[i] == j+1 else 0 for j in range(n_classes)]
+                     for i in range(y.shape[0])])
 
 
 def getIds(filename):
@@ -141,8 +141,6 @@ def VGG_Writer(include_top=True, weights='imagenet', input_tensor=None, input_sh
     elif pooling == 'max':
         x = GlobalMaxPooling2D()(x)
 
-    # Ensure that the model takes into account
-    # any potential predecessors of `input_tensor`.
     if input_tensor is not None:
         inputs = get_source_inputs(input_tensor)
     else:
@@ -185,10 +183,26 @@ def create_Partition(filepath, labels):
     return data
 
 
+def get_data(size, shape, IDs, labels, filepath):
+    """Read data."""
+    X = np.empty((size, shape[0], shape[1], shape[2]))
+    y = np.empty((size), dtype=int)
+
+    for i, ID in enumerate(IDs):
+        img = image.load_img(filepath + ID, target_size=(224, 224))
+        x = image.img_to_array(img)
+        # x = np.expand_dims(x, axis=0)
+        x = preprocess_input(x)
+        X[i, :, :, :] = x
+        name = ID.split('-')[0] + '-' + ID.split('-')[1]
+        y[i] = labels[name]
+    return (X, sparsify(y))
+
+
 if __name__ == '__main__':
     filepath = "/home/chrizandr/data/Telugu/test/"
-    class_path = "/home/chrizandr/data/writerids.csv"
-    output_file = "/home/chrizandr/data/VGG_Writer.hd5"
+    class_path = "/home/chrizandr/data/Telugu/writerids.csv"
+    output_file = "/home/chrizandr/data/Telugu/VGG_Writer.hd5"
     batch_size = 32
 
     labels = getIds(class_path)
@@ -200,12 +214,13 @@ if __name__ == '__main__':
     model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
     training_generator = DataGenerator(dim_x=224, dim_y=224, dim_z=3, batch_size=batch_size, shuffle=True,
-                                       n_classes=150, list_IDs=data["training"], labels=labels, filepath=filepath)
+                                       n_classes=150, list_IDs=data["training"][0:32], labels=labels, filepath=filepath)
+    # pdb.set_trace()
 
-    validation_generator = DataGenerator(dim_x=224, dim_y=224, dim_z=3, batch_size=batch_size, shuffle=True,
-                                         n_classes=150, list_IDs=data["validation"], labels=labels, filepath=filepath)
+    validation_data = get_data(len(data["validation"]), (224, 224, 3), data["validation"], labels, filepath)
 
     model.fit_generator(generator=training_generator,
-                        steps_per_epoch=len(data['train'])//batch_size,
-                        validation_data=validation_generator,
-                        validation_steps=len(data['validation'])//batch_size)
+                        steps_per_epoch=len(data['training'])//batch_size,
+                        validation_data=validation_data,
+                        validation_steps=len(data['validation'])//batch_size,
+                        callbacks=[checkpoint])
