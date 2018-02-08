@@ -7,3 +7,6 @@ reps/*
 paths.py
 output/*
 *.h5
+*.hd5
+*.csv
+*.pkl

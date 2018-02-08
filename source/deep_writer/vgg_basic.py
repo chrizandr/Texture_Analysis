@@ -91,7 +91,7 @@ def getIds(filename):
     return ids
 
 
-def VGG_Writer(include_top=True, weights='imagenet', input_tensor=None, input_shape=None, pooling=None, classes=1000):
+def VGG_Writer(include_top=True, weights='imagenet', input_tensor=None, input_shape=None, pooling='', classes=150):
     """VVG16 without final dense layers."""
     # Determine proper input shape
     input_shape = _obtain_input_shape(input_shape,
@@ -109,31 +109,31 @@ def VGG_Writer(include_top=True, weights='imagenet', input_tensor=None, input_sh
             img_input = input_tensor
 
     # Block 1
-    x = Conv2D(64, (3, 3), activation='relu', padding='same', name='block1_conv1')(img_input)
-    x = Conv2D(64, (3, 3), activation='relu', padding='same', name='block1_conv2')(x)
+    x = Conv2D(64, (3, 3), activation='relu', padding='same', name='block1_conv1', trainable=True)(img_input)
+    x = Conv2D(64, (3, 3), activation='relu', padding='same', name='block1_conv2', trainable=True)(x)
     x = MaxPooling2D((2, 2), strides=(2, 2), name='block1_pool')(x)
 
     # Block 2
-    x = Conv2D(128, (3, 3), activation='relu', padding='same', name='block2_conv1')(x)
-    x = Conv2D(128, (3, 3), activation='relu', padding='same', name='block2_conv2')(x)
+    x = Conv2D(128, (3, 3), activation='relu', padding='same', name='block2_conv1', trainable=True)(x)
+    x = Conv2D(128, (3, 3), activation='relu', padding='same', name='block2_conv2', trainable=True)(x)
     x = MaxPooling2D((2, 2), strides=(2, 2), name='block2_pool')(x)
 
     # Block 3
-    x = Conv2D(256, (3, 3), activation='relu', padding='same', name='block3_conv1')(x)
-    x = Conv2D(256, (3, 3), activation='relu', padding='same', name='block3_conv2')(x)
-    x = Conv2D(256, (3, 3), activation='relu', padding='same', name='block3_conv3')(x)
+    x = Conv2D(256, (3, 3), activation='relu', padding='same', name='block3_conv1', trainable=True)(x)
+    x = Conv2D(256, (3, 3), activation='relu', padding='same', name='block3_conv2', trainable=True)(x)
+    x = Conv2D(256, (3, 3), activation='relu', padding='same', name='block3_conv3', trainable=True)(x)
     x = MaxPooling2D((2, 2), strides=(2, 2), name='block3_pool')(x)
 
     # Block 4
-    x = Conv2D(512, (3, 3), activation='relu', padding='same', name='block4_conv1')(x)
-    x = Conv2D(512, (3, 3), activation='relu', padding='same', name='block4_conv2')(x)
-    x = Conv2D(512, (3, 3), activation='relu', padding='same', name='block4_conv3')(x)
+    x = Conv2D(512, (3, 3), activation='relu', padding='same', name='block4_conv1', trainable=True)(x)
+    x = Conv2D(512, (3, 3), activation='relu', padding='same', name='block4_conv2', trainable=True)(x)
+    x = Conv2D(512, (3, 3), activation='relu', padding='same', name='block4_conv3', trainable=True)(x)
     x = MaxPooling2D((2, 2), strides=(2, 2), name='block4_pool')(x)
 
     # Block 5
-    x = Conv2D(512, (3, 3), activation='relu', padding='same', name='block5_conv1')(x)
-    x = Conv2D(512, (3, 3), activation='relu', padding='same', name='block5_conv2')(x)
-    x = Conv2D(512, (3, 3), activation='relu', padding='same', name='block5_conv3')(x)
+    x = Conv2D(512, (3, 3), activation='relu', padding='same', name='block5_conv1', trainable=True)(x)
+    x = Conv2D(512, (3, 3), activation='relu', padding='same', name='block5_conv2', trainable=True)(x)
+    x = Conv2D(512, (3, 3), activation='relu', padding='same', name='block5_conv3', trainable=True)(x)
     x = MaxPooling2D((2, 2), strides=(2, 2), name='block5_pool')(x)
 
     if pooling == 'avg':
@@ -152,12 +152,17 @@ def VGG_Writer(include_top=True, weights='imagenet', input_tensor=None, input_sh
 
     feature_part.load_weights(weights_path)
 
+    for layer in feature_part.layers:
+        layer.trainable = True
+    for layer in feature_part.layers[:5]:
+        layer.trainable = False
+
     img_input = Input(shape=(224, 224, 3))
     features = feature_part(img_input)
-    x = Flatten(name='flatten')(features)
-    x = Dense(4096, activation='relu', name='fc1')(x)
-    x = Dense(4096, activation='relu', name='fc2')(x)
-    predictions = Dense(150, activation='softmax', name='predictions')(x)
+    x = Flatten(name='flatten', trainable=True)(features)
+    x = Dense(4096, activation='relu', name='fc1', trainable=True)(x)
+    x = Dense(4096, activation='relu', name='fc2', trainable=True)(x)
+    predictions = Dense(classes, activation='softmax', name='predictions', trainable=True)(x)
 
     model = Model(img_input, predictions, name="classifier")
 
@@ -223,4 +228,5 @@ if __name__ == '__main__':
                         steps_per_epoch=len(data['training'])//batch_size,
                         validation_data=validation_data,
                         validation_steps=len(data['validation'])//batch_size,
-                        callbacks=[checkpoint])
+                        callbacks=[checkpoint],
+                        epochs=20)

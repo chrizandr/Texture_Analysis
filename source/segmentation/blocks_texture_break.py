@@ -1,17 +1,21 @@
 """Texture based blocks."""
 import cv2
 import numpy as np
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 import os
 import pdb
-from blocks import strip_white, get_connected_components, refine_by_size
+from block import strip_white, get_connected_components, refine_by_size
 from scipy import ndimage
 import multiprocessing
 
 
-def get_base_texture(comp, max_height, shape):
+def get_base_texture(comp, max_height, shape, shuffle=True):
     """Get the base texture form the image."""
-    shuffle_list = np.random.permutation(len(comp))
+    if shuffle:
+        shuffle_list = np.random.permutation(len(comp))
+    else:
+        shuffle_list = np.arange(len(comp))
+
     components = [comp[x]*255 for x in shuffle_list]
     comps = list()
 
@@ -53,7 +57,7 @@ def extract(name):
     # Check if the files are images
     if name[-4:] == ".png":
         print("Processing image : "+name)
-        img = cv2.imread(dataset + name, 0)
+        img = cv2.imread(name, 0)
         img = cv2.threshold(img, 0, 1, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
         img = img[5:-5, 5:-5]
         components = get_connected_components(img)
@@ -62,7 +66,15 @@ def extract(name):
         for j in range(samples):
             print("Sample number: ", j)
             blocks = get_base_texture(components, img.shape[0], 224)
-
+            from block import feature_LBP
+            feat = feature_LBP(img)
+            plt.plot(feat[0:-1])
+            plt.show()
+            for i in range(5):
+                feat = feature_LBP(blocks[i])
+                plt.plot(feat[0:-1])
+            plt.show()
+            pdb.set_trace()
             for i in range(len(blocks)):
                 block = blocks[i].astype(np.uint8)
                 block = cv2.cvtColor(block, cv2.COLOR_GRAY2RGB)
@@ -74,8 +86,8 @@ if __name__ == "__main__":
     dataset = "/home/chrizandr/data/Telugu/handwritten/"
     files = os.listdir(dataset)
 
-    # extract(files[0])
-    # pdb.set_trace()
-
-    pool = multiprocessing.Pool(5)
-    result = pool.map(extract, files)
+    extract("test2.png")
+    # # pdb.set_trace()
+    #
+    # pool = multiprocessing.Pool(5)
+    # result = pool.map(extract, files)
