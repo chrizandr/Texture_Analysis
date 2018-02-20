@@ -5,7 +5,8 @@ from keras.preprocessing import image
 from keras.layers import Dense, Input
 from keras.models import Model
 from random import shuffle
-from keras.callbacks import ModelCheckpoint
+from keras.callbacks import ModelCheckpoint, TensorBoard
+
 from keras.models import load_model
 import os
 import pdb
@@ -145,7 +146,7 @@ def get_data(size, dim, IDs, filepath):
 
 if __name__ == '__main__':
     filepath = "/home/chrizandr/data/Telugu/strokes/"
-    output_file = "autoencoder.hd5"
+    output_file = "autoencoder_.hd5"
     batch_size = 32
     encoding_dim = 100
     input_dim = (25, 25)
@@ -159,16 +160,18 @@ if __name__ == '__main__':
     validation_data = get_data(len(data["validation"]), input_dim[0], data["validation"], filepath)
 
     autoencoder = autoencoder_model(encoding_dim, input_dim)
+    # autoencoder = load_model(output_file)
     autoencoder.compile(optimizer='adadelta', loss='binary_crossentropy', metrics=['accuracy'])
 
     checkpoint = ModelCheckpoint(filepath=output_file, monitor='val_loss')
+    tboard = TensorBoard(log_dir="logs/")
+
     autoencoder.fit_generator(generator=training_generator,
                               steps_per_epoch=len(data['train'])//batch_size,
                               validation_data=validation_data,
                               validation_steps=len(data['validation'])//batch_size,
-                              callbacks=[checkpoint],
+                              callbacks=[checkpoint, tboard],
                               epochs=20)
-
     test_generator = DataGenerator(dim=input_dim[0], batch_size=batch_size, shuffle=True,
                                    list_IDs=data["test"], filepath=filepath).generator()
     model = load_model(output_file)

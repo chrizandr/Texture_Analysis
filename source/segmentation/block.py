@@ -1,4 +1,4 @@
-a"""Creating text blocks from the text image."""
+"""Creating text blocks from the text image."""
 
 import numpy as np
 import cv2

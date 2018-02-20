@@ -5,15 +5,16 @@ import csv
 import os
 from sklearn.cluster import MiniBatchKMeans as KMeans
 from sklearn import metrics
+from keras.models import load_model
 # from collections import Counter
 import pickle
 from shutil import copyfile
 import pdb
 
 
-def cluster(X, n_clusters, file_names, out_folder="", src_folder="", output=False, score=False):
+def cluster(X, n_clusters, file_names, out_folder="", src_folder="", output=False, score=False, model_name="cluster.pkl"):
     """Cluster strokes, calculate distribution, group images according to clusters."""
-    kmeans = KMeans(n_clusters=n_clusters, init='random', max_iter=20000, batch_size=5000, init_size=10000)
+    kmeans = KMeans(n_clusters=n_clusters, init='random', max_iter=20000, batch_size=10000, init_size=10000)
 
     print("Clustering the strokes")
     kmeans.fit(X)
@@ -38,7 +39,9 @@ def cluster(X, n_clusters, file_names, out_folder="", src_folder="", output=Fals
                 dest = out_folder + str(i) + '/' + name
                 copyfile(src, dest)
 
-    return output_labels
+    print("Saving model as", model_name)
+    pickle.dump(kmeans, open(model_name, "wb"))
+    return output_labels, kmeans.cluster_centers_
 
 
 def read_data(feature_file, normalize=False, shuffle=True):
@@ -50,8 +53,8 @@ def read_data(feature_file, normalize=False, shuffle=True):
     for row in reader:
         row_ = [100*float(x) for x in row[0:-1]]
         if normalize:
-            max_val = max(row_)
-            X.append([x/max_val for x in row_])
+                max_val = max(row_)
+                X.append([x/max_val for x in row_])
         else:
             X.append(row_)
         strokes.append(row[-1])
@@ -82,14 +85,20 @@ def find_scores(FEATURE_FILE, range_=(20, 100)):
 
 
 if __name__ == "__main__":
-    FEATURE_FILE = "output.csv"
-    OUT_FOLDER = "/home/chrizandr/data/Telugu/clustered_strokes_31/"
+    FEATURE_FILE = "cg_features.csv"
+    OUT_FOLDER = "/home/chrizandr/data/Telugu/strokes_linear_58/"
     SRC_FOLDER = "/home/chrizandr/data/Telugu/strokes/"
-    RANGE = (20, 100)
+    N_CLUSTERS = 44
+    OUTPUT = False
+
+    model_name = FEATURE_FILE[0:-4] + '_' + str(N_CLUSTERS) + ".pkl"
+    print(model_name)
+
+    # RANGE = (20, 100)
     # scores = find_scores(FEATURE_FILE, RANGE)
 
     print("Reading data...")
     X, strokes = read_data(FEATURE_FILE)
-    cluster(X, 31, strokes, OUT_FOLDER, SRC_FOLDER, output=True)
+    labels, centroids = cluster(X, N_CLUSTERS, strokes, OUT_FOLDER, SRC_FOLDER, output=OUTPUT, model_name=model_name)
 
     pdb.set_trace()

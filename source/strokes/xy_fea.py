@@ -59,7 +59,7 @@ if __name__ == "__main__":
 
     # img = cv2.imread(data_path + folder + '/' + stroke, 0)[1:-1, 1:-1]
     i = 0
-    f = open("features.csv", "w")
+    f = open("linear_features.csv", "w")
     for folder in folders:
         printProgressBar(i+1, 450, "Progress", "Complete", length=50)
         i += 1

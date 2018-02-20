@@ -2,18 +2,23 @@
 
 import cv2
 from skimage.morphology import skeletonize_3d
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 import pickle
-# import pdb
+import pdb
 import numpy as np
 import os
 import multiprocessing
 import random
+from cg_fea import get_feature
 from xy_fea import feature
 
-
-def get_color_map(n):
+def get_color_map(n, greyscale=False):
     """Return color map for given number of colors."""
+    if greyscale:
+        colors = np.linspace(0, int((255*4)/5), num=n).astype(int)
+        print(len(colors))
+        return colors
+
     random.seed(10)
     colormap_img = np.ones((5*n, 5*n, 3)) * 255
 
@@ -30,8 +35,15 @@ def get_color_map(n):
 
 def colorize_strokes(activated, cluster, color_map):
     """Colorize strokes based on clustering."""
+    greyscale = True
+    if len(color_map.shape) > 1:
+        greyscale = False
+
     nimg = cv2.connectedComponents(1-activated)[1]
-    colored_img = np.ones((activated.shape[0], activated.shape[1], 3)) * 255
+    if greyscale:
+        colored_img = np.ones((activated.shape[0], activated.shape[1])) * 255
+    else:
+        colored_img = np.ones((activated.shape[0], activated.shape[1], 3)) * 255
     # Get the connectedComponents
     labels = set(np.unique(nimg))
     labels.remove(0)
@@ -50,14 +62,19 @@ def colorize_strokes(activated, cluster, color_map):
             img = np.hstack((np.ones((img.shape[0], 1)), img))
             img = (img*255)[1:-1, 1:-1]
 
+            # raw_feature = get_feature(img)
             raw_feature = feature(img, 25, 25)
-            max_val = max(raw_feature)
-            norm_feature = [x/max_val for x in raw_feature]
+            raw_feature = [100*float(x) for x in raw_feature]
+            prediction_label = cluster.predict(np.array(raw_feature).reshape(1, -1))
+            # print(prediction_label)
+            # pdb.set_trace()
+            if greyscale:
+                color = color_map[prediction_label]
+                colored_img[sub_region[0], sub_region[1]] = color
 
-            prediction_label = cluster.predict(np.array(norm_feature).reshape(1, -1))
-
-            color = color_map[:, prediction_label].reshape(1, -1)
-            colored_img[sub_region[0], sub_region[1], :] = color
+            else:
+                color = color_map[:, prediction_label].reshape(1, -1)
+                colored_img[sub_region[0], sub_region[1], :] = color
     return colored_img
 
 
@@ -102,8 +119,8 @@ def main(input_tuple):
     root_folder, img_name, cluster, color_map, bank = input_tuple
     assert img_name[-4:] in [".png", ".jpg"]
     print("Processing ", img_name)
-    INPUT_FOLDER = "/home/chrizandr/data/Telugu/skel_data/"
-    OUTPUT_FOLDER = "/home/chrizandr/data/Telugu/clr_data/"
+    # INPUT_FOLDER = "/home/chrizandr/data/Telugu/skel_data/"
+    OUTPUT_FOLDER = "/home/chrizandr/data/Telugu/linear_color_maps/"
 
     img = cv2.imread(root_folder + img_name, 0)
     assert img is not None
@@ -113,16 +130,16 @@ def main(input_tuple):
     activated = active_regions(skeleton, bank)
     color_image = colorize_strokes(activated, cluster, color_map)
 
-    cv2.imwrite(INPUT_FOLDER + img_name, 255 - (skeleton*255))
-    cv2.imwrite(OUTPUT_FOLDER + img_name, 255-color_image)
+    # cv2.imwrite(INPUT_FOLDER + img_name, 255 - (skeleton*255))
+    cv2.imwrite(OUTPUT_FOLDER + img_name, color_image)
 
     return None
 
 
 if __name__ == "__main__":
-    CLUSTER = pickle.load(open("cluster.pkl", "rb"))
-    BANK = pickle.load(open("../../banks/Py2.7/J34_3.pkl", "rb"))
-    COLOR_MAP = get_color_map(len(CLUSTER.cluster_centers_))
+    CLUSTER = pickle.load(open("linear_features_58.pkl", "rb"))
+    BANK = pickle.load(open("../../banks/Py3.5/J34_3.pkl", "rb"))
+    COLOR_MAP = get_color_map(len(CLUSTER.cluster_centers_), greyscale=True)
     DATA_FOLDER = "/home/chrizandr/data/Telugu/handwritten/"
 
     folderlist = os.listdir(DATA_FOLDER)

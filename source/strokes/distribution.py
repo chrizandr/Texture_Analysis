@@ -22,7 +22,7 @@ def find_dist(path):
 
 
 if __name__ == "__main__":
-    PATH = "/home/chrizandr/data/Telugu/clustered_strokes_31/"
+    PATH = "/home/chrizandr/data/Telugu/strokes_cmass_44/"
     dist = find_dist(PATH)
     f = open("distributions.csv", "w")
     for key in dist.keys():

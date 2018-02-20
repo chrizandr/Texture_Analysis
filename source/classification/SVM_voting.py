@@ -94,7 +94,6 @@ def classify(filename, folds):
         svm = SVC(kernel='linear')
         svm.fit(train_data, train_class)
         correct = 0.0
-        pdb.set_trace()
         for page in test_data:
             page_class = ids[page]
             output = svm.predict(test_data[page])

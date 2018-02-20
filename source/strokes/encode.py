@@ -99,7 +99,7 @@ def read_data(size, shape, IDs, filepath):
 if __name__ == "__main__":
     model_file = "autoencoder.hd5"
     filepath = "/home/chrizandr/data/Telugu/strokes/"
-    batch_size = 1
+    batch_size = 32
 
     model = load_model(model_file)
 
@@ -108,15 +108,13 @@ if __name__ == "__main__":
     encoder = Model(input_layer, output_layer)
 
     data = get_data(filepath)
-    # pdb.set_trace()
     data_gen = DataGenerator(dim=25, batch_size=batch_size, shuffle=False,
                              list_IDs=data, filepath=filepath).generator()
     print("Predicting")
-    pdb.set_trace()
     predictions = encoder.predict_generator(generator=data_gen, steps=len(data)//batch_size + 1)
 
     print("Writing the output")
-    f = open("output.csv", "w")
+    f = open("auto_enc_feature.csv", "w")
     for i in range(len(data)):
         f.write(",".join([str(x) for x in predictions[i]]))
         f.write("," + data[i].split('/')[0] + '-' + data[i].split('/')[1] + "\n")
