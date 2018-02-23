@@ -71,8 +71,8 @@ def get_feature(img, l=6):
 
 if __name__ == "__main__":
 
-    path = "/home/chrizandr/data/Telugu/strokes/"
-    output_file = open("cg_features.csv", "w")
+    path = "/home/chrizandr/data/Bangla/strokes/"
+    output_file = open("cg_features_ban.csv", "w")
     sub_dirs = os.listdir(path)
 
     for dr in sub_dirs:

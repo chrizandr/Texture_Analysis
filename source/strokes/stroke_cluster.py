@@ -5,7 +5,6 @@ import csv
 import os
 from sklearn.cluster import MiniBatchKMeans as KMeans
 from sklearn import metrics
-from keras.models import load_model
 # from collections import Counter
 import pickle
 from shutil import copyfile
@@ -35,7 +34,7 @@ def cluster(X, n_clusters, file_names, out_folder="", src_folder="", output=Fals
             for j in file_indices:
                 name = file_names[j]
                 parts = name.split('-')
-                src = src_folder + "-".join(parts[0:2]) + '/' + parts[2]
+                src = src_folder + "-".join(parts[0:1]) + '/' + parts[1]
                 dest = out_folder + str(i) + '/' + name
                 copyfile(src, dest)
 
@@ -85,11 +84,11 @@ def find_scores(FEATURE_FILE, range_=(20, 100)):
 
 
 if __name__ == "__main__":
-    FEATURE_FILE = "cg_features.csv"
-    OUT_FOLDER = "/home/chrizandr/data/Telugu/strokes_linear_58/"
-    SRC_FOLDER = "/home/chrizandr/data/Telugu/strokes/"
-    N_CLUSTERS = 44
-    OUTPUT = False
+    FEATURE_FILE = "cg_features_kan.csv"
+    OUT_FOLDER = "/home/chrizandr/data/Kannada/strokes_cg_40/"
+    SRC_FOLDER = "/home/chrizandr/data/Kannada/strokes/"
+    N_CLUSTERS = 40
+    OUTPUT = True
 
     model_name = FEATURE_FILE[0:-4] + '_' + str(N_CLUSTERS) + ".pkl"
     print(model_name)

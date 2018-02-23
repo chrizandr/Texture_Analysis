@@ -11,6 +11,30 @@ import multiprocessing
 import random
 from cg_fea import get_feature
 from xy_fea import feature
+from keras.models import load_model, Model
+from PIL import Image
+
+
+def process(imag):
+    dim = 25
+    img = Image.fromarray(imag)
+    size = img.size
+    if size[0] > size[1]:
+        height = dim
+        width = int(dim * size[1] / size[0])
+        shape = (dim - width, dim)
+        axis = 0
+    else:
+        width = dim
+        height = int(dim * size[0] / size[1])
+        shape = (dim, dim - height)
+        axis = 1
+    img = img.resize((height, width))
+    x = np.array(img)
+    X = np.empty((1, dim*dim))
+    X[0] = np.concatenate((x, np.ones(shape)), axis).reshape(dim*dim)
+    return X
+
 
 def get_color_map(n, greyscale=False):
     """Return color map for given number of colors."""
@@ -60,14 +84,16 @@ def colorize_strokes(activated, cluster, color_map):
             img = np.vstack((np.ones((1, img.shape[1])), img))
             img = np.hstack((img, np.ones((img.shape[0], 1))))
             img = np.hstack((np.ones((img.shape[0], 1)), img))
-            img = (img*255)[1:-1, 1:-1]
-
-            # raw_feature = get_feature(img)
-            raw_feature = feature(img, 25, 25)
+            img = (img)[1:-1, 1:-1] * 255
+            # img = process(img)
+            raw_feature = get_feature(img)
+            # raw_feature = feature(img, 25, 25)
+            # raw_feature = encoder.predict(img)[0]
+            # print(raw_feature)
             raw_feature = [100*float(x) for x in raw_feature]
             prediction_label = cluster.predict(np.array(raw_feature).reshape(1, -1))
-            # print(prediction_label)
             # pdb.set_trace()
+            print(prediction_label)
             if greyscale:
                 color = color_map[prediction_label]
                 colored_img[sub_region[0], sub_region[1]] = color
@@ -120,7 +146,8 @@ def main(input_tuple):
     assert img_name[-4:] in [".png", ".jpg"]
     print("Processing ", img_name)
     # INPUT_FOLDER = "/home/chrizandr/data/Telugu/skel_data/"
-    OUTPUT_FOLDER = "/home/chrizandr/data/Telugu/linear_color_maps/"
+    # OUTPUT_FOLDER = "/home/chrizandr/data/Telugu/auto_enc_color_maps/"
+    OUTPUT_FOLDER = "rep/"
 
     img = cv2.imread(root_folder + img_name, 0)
     assert img is not None
@@ -137,15 +164,20 @@ def main(input_tuple):
 
 
 if __name__ == "__main__":
-    CLUSTER = pickle.load(open("linear_features_58.pkl", "rb"))
+    CLUSTER = pickle.load(open("cmass_stroke_rep_tel44.pkl", "rb"))
     BANK = pickle.load(open("../../banks/Py3.5/J34_3.pkl", "rb"))
-    COLOR_MAP = get_color_map(len(CLUSTER.cluster_centers_), greyscale=True)
+    COLOR_MAP = get_color_map(len(CLUSTER.cluster_centers_), greyscale=False)
     DATA_FOLDER = "/home/chrizandr/data/Telugu/handwritten/"
+    model = load_model("autoencoder_tel.hd5")
+    input_layer = model.input
+    output_layer = model.layers[1].output
+    encoder = Model(input_layer, output_layer)
 
     folderlist = os.listdir(DATA_FOLDER)
     folderlist.sort()
 
     input_list = [(DATA_FOLDER, x, CLUSTER, COLOR_MAP, BANK) for x in folderlist]
-
-    pool = multiprocessing.Pool(6)
-    result = pool.map(main, input_list)
+    main(("", "test.png", CLUSTER, COLOR_MAP, BANK))
+    # main(input_list[0])
+    # pool = multiprocessing.Pool(6)
+    # result = pool.map(main, input_list)
