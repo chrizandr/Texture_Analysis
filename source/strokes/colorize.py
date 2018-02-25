@@ -29,7 +29,10 @@ def process(imag):
         height = int(dim * size[0] / size[1])
         shape = (dim, dim - height)
         axis = 1
-    img = img.resize((height, width))
+    try:
+        img = img.resize((height, width))
+    except:
+        pdb.set_trace()
     x = np.array(img)
     X = np.empty((1, dim*dim))
     X[0] = np.concatenate((x, np.ones(shape)), axis).reshape(dim*dim)

@@ -25,9 +25,9 @@ def find_dist(path, optional=False):
 
 
 if __name__ == "__main__":
-    PATH = "/home/chrizandr/data/Bangla/strokes_linear_23/"
-    dist = find_dist(PATH, False)
-    f = open("strokes_linear_23ban.csv", "w")
+    PATH = "/home/chrizandr/data/firemaker/strokes_cmass_36/"
+    dist = find_dist(PATH, True)
+    f = open("strokes_cmass_36dutch.csv", "w")
     for key in dist.keys():
         f.write(",".join([str(x) for x in dist[key]]))
         f.write(',' + key + '\n')

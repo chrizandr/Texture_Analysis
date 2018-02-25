@@ -27,6 +27,8 @@ def process(imag):
         height = int(dim * size[0] / size[1])
         shape = (dim, dim - height)
         axis = 1
+    if height == 0 or width == 0:
+        return None
     img = img.resize((height, width))
     x = np.array(img)
     X = np.empty((1, dim*dim))
@@ -57,6 +59,7 @@ def get_color_map(n, greyscale=False):
 
 def colorize_strokes(activated, cluster, color_map):
     """Colorize strokes based on clustering."""
+    global encoder
     greyscale = True
     if len(color_map.shape) > 1:
         greyscale = False
@@ -85,12 +88,16 @@ def colorize_strokes(activated, cluster, color_map):
             img = np.hstack((img, np.ones((img.shape[0], 1))))
             img = np.hstack((np.ones((img.shape[0], 1)), img))
             img = process(img)
+            if img is None:
+                continue
+
             strokes = np.vstack((strokes, img))
             subregions.append(sub_region)
-
+    print("predicting")
     raw_features = encoder.predict(strokes[1:])
     raw_features = raw_features * 100
     prediction_label = cluster.predict(np.array(raw_features))
+    print("coloring")
     for i, sub_region in enumerate(subregions):
         if greyscale:
             color = color_map[prediction_label[i]]
@@ -145,9 +152,9 @@ def main(input_tuple):
     assert img_name[-4:] in [".png", ".jpg", ".tif"]
     print("Processing ", img_name)
     # INPUT_FOLDER = "/home/chrizandr/data/Telugu/skel_data/"
-    OUTPUT_FOLDER = "/home/chrizandr/data/Telugu/auto_enc_color_maps/"
+    OUTPUT_FOLDER = "/home/chrizandr/data/Bangla/auto_enc_color_maps/"
 
-    img = cv2.imread(root_folder + img_name, 0)
+    img = cv2.imread(root_folder + img_name, 0)[5:-5, 5:-5]
     assert img is not None
 
     binary_img = cv2.threshold(img, 0, 1, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
@@ -162,22 +169,23 @@ def main(input_tuple):
 
 
 if __name__ == "__main__":
-    CLUSTER = pickle.load(open("auto_enc_feature_tel56.pkl", "rb"))
+    CLUSTER = pickle.load(open("auto_enc_feature_ban_35.pkl", "rb"))
     BANK = pickle.load(open("../../banks/Py3.5/J34_3.pkl", "rb"))
     COLOR_MAP = get_color_map(len(CLUSTER.cluster_centers_), greyscale=True)
-    DATA_FOLDER = "/home/chrizandr/data/Telugu/handwritten/"
-
-    model = load_model("autoencoder_tel.hd5")
+    DATA_FOLDER = "/home/chrizandr/data/Bangla/bangla_40/"
+    LOCK = False
+    model = load_model("autoencoder_bangla.hd5")
     input_layer = model.input
     output_layer = model.layers[1].output
     encoder = Model(input_layer, output_layer)
+    encoder._make_predict_function()
 
     folderlist = os.listdir(DATA_FOLDER)
     folderlist.sort()
 
     input_list = [(DATA_FOLDER, x, CLUSTER, COLOR_MAP, BANK) for x in folderlist]
-    # main(("", "test.png", CLUSTER, COLOR_MAP, BANK))
-
-    # main(input_list[0])
-    pool = multiprocessing.Pool(20)
-    result = pool.map(main, input_list)
+    # main((DATA_FOLDER, "Kannada_1_022.tif", CLUSTER, COLOR_MAP, BANK))
+    # pdb.set_trace()
+    [main(c) for c in input_list]
+    # pool = multiprocessing.Pool(6)
+    # result = pool.map(main, input_list)

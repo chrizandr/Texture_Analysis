@@ -18,7 +18,7 @@ def getIds(filename):
 
 def classify(filename, top=1):
     """Classification."""
-    ids = getIds("/home/chrizandr/data/Bangla/writerids.csv")
+    ids = getIds("/home/chrizandr/data/firemaker/writerids.csv")
     f = open(filename, 'r')
     reader = csv.reader(f, delimiter=',')
     dataset = list()
@@ -51,6 +51,7 @@ def classify(filename, top=1):
         sresult = np.argsort(result, axis=1)
         fresult = sresult[:, -top:]
         correct = 0
+        # pdb.set_trace()
         for i in range(result.shape[0]):
             if int(t_test[i, -1]) in fresult[i]:
                 correct += 1
@@ -68,7 +69,7 @@ def classify(filename, top=1):
 if __name__ == "__main__":
     results = list()
     for data_dir in ["/home/chrizandr/Texture_Analysis/source/strokes/"]:
-        for filename in ["strokes_cg_21ban"]:
+        for filename in ["strokes_auto_29dutch"]:
             print("Classifying : " + filename)
             for i in range(1, 11):
                 evl = classify(data_dir+filename+".csv", top=i)
