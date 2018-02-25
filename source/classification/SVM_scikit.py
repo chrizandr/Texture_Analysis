@@ -2,7 +2,6 @@
 
 import numpy as np
 from sklearn.svm import SVC
-# from sklearn.neighbors import KNeighborsClassifier
 import pdb
 import csv
 
@@ -17,9 +16,9 @@ def getIds(filename):
     return ids
 
 
-def classify(filename):
+def classify(filename, top=1):
     """Classification."""
-    ids = getIds("/home/chrizandr/data/Telugu/writerids.csv")
+    ids = getIds("/home/chrizandr/data/Bangla/writerids.csv")
     f = open(filename, 'r')
     reader = csv.reader(f, delimiter=',')
     dataset = list()
@@ -44,25 +43,36 @@ def classify(filename):
                 train.append(dataset[i, :])
         t_train = np.array(train)
         t_test = np.array(test)
-        svm = SVC(kernel='linear')
+        svm = SVC(kernel='linear', probability=False, decision_function_shape='ovo')
         # svm = KNeighborsClassifier()
         svm.fit(t_train[:, 0:-1], t_train[:, -1])
-        result = svm.predict(t_test[:, 0:-1])
+        svm.decision_function_shape = 'ovr'
+        result = svm.decision_function(t_test[:, 0:-1])
+        sresult = np.argsort(result, axis=1)
+        fresult = sresult[:, -top:]
         correct = 0
         for i in range(result.shape[0]):
-            if int(result[i]) == int(t_test[i, -1]):
+            if int(t_test[i, -1]) in fresult[i]:
                 correct += 1
         results.append((100*float(correct)) / t_test.shape[0])
+
+        # result = svm.predict(t_test[:, 0:-1])
+        # correct = 0
+        # for i in range(result.shape[0]):
+        #     if int(t_test[i, -1]) == result[i]:
+        #         correct += 1
+        # results.append((100*float(correct)) / t_test.shape[0])
     return sum(results)/len(results)
 
 
 if __name__ == "__main__":
     results = list()
     for data_dir in ["/home/chrizandr/Texture_Analysis/source/strokes/"]:
-        for filename in ["distributions"]:
+        for filename in ["strokes_cg_21ban"]:
             print("Classifying : " + filename)
-            evl = classify(data_dir+filename+".csv")
-            print("Evaluating")
-            # ------------------------------------
-            results.append((filename, evl))
+            for i in range(1, 11):
+                evl = classify(data_dir+filename+".csv", top=i)
+                print("Evaluating")
+                # ------------------------------------
+                results.append((filename, evl))
     pdb.set_trace()

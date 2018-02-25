@@ -78,7 +78,7 @@ def main(input_tuple):
     assert img_name[-4:] in [".png", ".jpg", ".tif"]
     print("Processing ", img_name)
     # INPUT_FOLDER = "/home/chrizandr/data/Telugu/skel_data/"
-    OUTPUT_FOLDER = "/home/chrizandr/data/IAM/strokes/"
+    OUTPUT_FOLDER = "/home/chrizandr/data/firemaker/strokes/"
 
     img = cv2.imread(root_folder + img_name, 0)
     assert img is not None
@@ -97,12 +97,12 @@ def main(input_tuple):
 
 if __name__ == "__main__":
     BANK = pickle.load(open("../../banks/Py3.5/J34_3.pkl", "rb"))
-    DATA_FOLDER = "/home/chrizandr/data/IAM/IAM_hand/"
+    DATA_FOLDER = "/home/chrizandr/data/firemaker/handwritten/"
 
     folderlist = os.listdir(DATA_FOLDER)
     folderlist.sort()
 
     input_list = [(DATA_FOLDER, x, BANK) for x in folderlist]
     # main(input_list[0])
-    pool = multiprocessing.Pool(6)
+    pool = multiprocessing.Pool(20)
     result = pool.map(main, input_list)

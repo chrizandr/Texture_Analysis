@@ -97,9 +97,9 @@ def read_data(size, shape, IDs, filepath):
 
 
 if __name__ == "__main__":
-    model_file = "autoencoder.hd5"
-    filepath = "/home/chrizandr/data/Telugu/strokes/"
-    batch_size = 32
+    model_file = "autoencoder_dutch.hd5"
+    filepath = "/home/chrizandr/data/firemaker/strokes/"
+    batch_size = 100
 
     model = load_model(model_file)
 
@@ -114,7 +114,7 @@ if __name__ == "__main__":
     predictions = encoder.predict_generator(generator=data_gen, steps=len(data)//batch_size + 1)
 
     print("Writing the output")
-    f = open("auto_enc_feature.csv", "w")
+    f = open("auto_enc_feature_dutch.csv", "w")
     for i in range(len(data)):
         f.write(",".join([str(x) for x in predictions[i]]))
         f.write("," + data[i].split('/')[0] + '-' + data[i].split('/')[1] + "\n")

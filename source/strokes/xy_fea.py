@@ -53,15 +53,15 @@ def feature(img, n, m):
 
 
 if __name__ == "__main__":
-    data_path = "/home/chrizandr/data/Bangla/strokes/"
+    data_path = "/home/chrizandr/data/firemaker/strokes/"
     folders = os.listdir(data_path)
     folders.sort()
 
     # img = cv2.imread(data_path + folder + '/' + stroke, 0)[1:-1, 1:-1]
     i = 0
-    f = open("linear_features_ban.csv", "w")
+    f = open("linear_features_dutch.csv", "w")
     for folder in folders:
-        printProgressBar(i+1, 450, "Progress", "Complete", length=50)
+        printProgressBar(i+1, len(folders), "Progress", "Complete", length=50)
         i += 1
         strokes = os.listdir(data_path + folder + '/')
         # print("Processing " + folder)

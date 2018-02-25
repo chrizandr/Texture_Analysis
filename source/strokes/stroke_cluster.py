@@ -34,7 +34,8 @@ def cluster(X, n_clusters, file_names, out_folder="", src_folder="", output=Fals
             for j in file_indices:
                 name = file_names[j]
                 parts = name.split('-')
-                src = src_folder + "-".join(parts[0:1]) + '/' + parts[1]
+                # pdb.set_trace()
+                src = src_folder + "-".join(parts[0:1]) + '/' + parts[-1]
                 dest = out_folder + str(i) + '/' + name
                 copyfile(src, dest)
 
@@ -84,15 +85,14 @@ def find_scores(FEATURE_FILE, range_=(20, 100)):
 
 
 if __name__ == "__main__":
-    FEATURE_FILE = "cg_features_kan.csv"
-    OUT_FOLDER = "/home/chrizandr/data/Kannada/strokes_cg_40/"
-    SRC_FOLDER = "/home/chrizandr/data/Kannada/strokes/"
-    N_CLUSTERS = 40
+    FEATURE_FILE = "auto_enc_feature_dutch.csv"
+    OUT_FOLDER = "/home/chrizandr/data/firemaker/strokes_auto_29/"
+    SRC_FOLDER = "/home/chrizandr/data/firemaker/strokes/"
+    N_CLUSTERS = 29
     OUTPUT = True
 
     model_name = FEATURE_FILE[0:-4] + '_' + str(N_CLUSTERS) + ".pkl"
     print(model_name)
-
     # RANGE = (20, 100)
     # scores = find_scores(FEATURE_FILE, RANGE)
 

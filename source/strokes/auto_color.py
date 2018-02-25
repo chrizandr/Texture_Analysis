@@ -9,8 +9,6 @@ import numpy as np
 import os
 import multiprocessing
 import random
-from cg_fea import get_feature
-from xy_fea import feature
 from keras.models import load_model, Model
 from PIL import Image
 
@@ -33,7 +31,7 @@ def process(imag):
     x = np.array(img)
     X = np.empty((1, dim*dim))
     X[0] = np.concatenate((x, np.ones(shape)), axis).reshape(dim*dim)
-    return X
+    return 1-X
 
 
 def get_color_map(n, greyscale=False):
@@ -71,7 +69,9 @@ def colorize_strokes(activated, cluster, color_map):
     # Get the connectedComponents
     labels = set(np.unique(nimg))
     labels.remove(0)
-    for label in labels:
+    strokes = np.empty((1, 625))
+    subregions = []
+    for i, label in enumerate(labels):
         sub_region = (nimg == label).nonzero()
         max_hor = sub_region[1].max()
         min_hor = sub_region[1].min()
@@ -84,22 +84,22 @@ def colorize_strokes(activated, cluster, color_map):
             img = np.vstack((np.ones((1, img.shape[1])), img))
             img = np.hstack((img, np.ones((img.shape[0], 1))))
             img = np.hstack((np.ones((img.shape[0], 1)), img))
-            img = (img)[1:-1, 1:-1] * 255
-            # img = process(img)
-#            raw_feature = get_feature(img)
-            raw_feature = feature(img, 25, 25)
-            # raw_feature = encoder.predict(img)[0]
-            # print(raw_feature)
-            raw_feature = [100*float(x) for x in raw_feature]
-            prediction_label = cluster.predict(np.array(raw_feature).reshape(1, -1))
-            # pdb.set_trace()
-            if greyscale:
-                color = color_map[prediction_label]
-                colored_img[sub_region[0], sub_region[1]] = color
+            img = process(img)
+            strokes = np.vstack((strokes, img))
+            subregions.append(sub_region)
 
-            else:
-                color = color_map[:, prediction_label].reshape(1, -1)
-                colored_img[sub_region[0], sub_region[1], :] = color
+    raw_features = encoder.predict(strokes[1:])
+    raw_features = raw_features * 100
+    prediction_label = cluster.predict(np.array(raw_features))
+    for i, sub_region in enumerate(subregions):
+        if greyscale:
+            color = color_map[prediction_label[i]]
+            colored_img[sub_region[0], sub_region[1]] = color
+
+        else:
+            color = color_map[:, prediction_label[i]].reshape(1, -1)
+            colored_img[sub_region[0], sub_region[1], :] = color
+    # pdb.set_trace()
     return colored_img
 
 
@@ -145,7 +145,7 @@ def main(input_tuple):
     assert img_name[-4:] in [".png", ".jpg", ".tif"]
     print("Processing ", img_name)
     # INPUT_FOLDER = "/home/chrizandr/data/Telugu/skel_data/"
-    OUTPUT_FOLDER = "/home/chrizandr/data/firemaker/linear_color_maps/"
+    OUTPUT_FOLDER = "/home/chrizandr/data/Telugu/auto_enc_color_maps/"
 
     img = cv2.imread(root_folder + img_name, 0)
     assert img is not None
@@ -162,20 +162,22 @@ def main(input_tuple):
 
 
 if __name__ == "__main__":
-    CLUSTER = pickle.load(open("linear_features_dutch_28.pkl", "rb"))
+    CLUSTER = pickle.load(open("auto_enc_feature_tel56.pkl", "rb"))
     BANK = pickle.load(open("../../banks/Py3.5/J34_3.pkl", "rb"))
     COLOR_MAP = get_color_map(len(CLUSTER.cluster_centers_), greyscale=True)
-    DATA_FOLDER = "/home/chrizandr/data/firemaker/natural/"
-    # model = load_model("autoencoder_tel.hd5")
-    # input_layer = model.input
-    # output_layer = model.layers[1].output
-    # encoder = Model(input_layer, output_layer)
+    DATA_FOLDER = "/home/chrizandr/data/Telugu/handwritten/"
+
+    model = load_model("autoencoder_tel.hd5")
+    input_layer = model.input
+    output_layer = model.layers[1].output
+    encoder = Model(input_layer, output_layer)
 
     folderlist = os.listdir(DATA_FOLDER)
     folderlist.sort()
 
     input_list = [(DATA_FOLDER, x, CLUSTER, COLOR_MAP, BANK) for x in folderlist]
     # main(("", "test.png", CLUSTER, COLOR_MAP, BANK))
+
     # main(input_list[0])
-    pool = multiprocessing.Pool(6)
+    pool = multiprocessing.Pool(20)
     result = pool.map(main, input_list)
