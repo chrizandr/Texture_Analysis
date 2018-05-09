@@ -16,9 +16,19 @@ def getIds(filename):
     return ids
 
 
+def normalize(dataset):
+    """Normalization."""
+    data = dataset[:, 0:-1]
+    classes = dataset[:, -1].reshape(-1, 1)
+    max_vals = np.max(data, axis=1)
+    data = data/max_vals[:, None]
+    dataset = np.hstack((data, classes))
+    return dataset
+
+
 def classify(filename, top=1):
     """Classification."""
-    ids = getIds("/home/chrizandr/data/firemaker/writerids.csv")
+    ids = getIds(WRITER_FILE)
     f = open(filename, 'r')
     reader = csv.reader(f, delimiter=',')
     dataset = list()
@@ -28,6 +38,7 @@ def classify(filename, top=1):
         dataset.append(data)
 
     dataset = np.array(dataset)
+    dataset = normalize(dataset)
     results = list()
     for model in range(10):
         np.random.shuffle(dataset)
@@ -67,13 +78,21 @@ def classify(filename, top=1):
 
 
 if __name__ == "__main__":
+    WRITER_FILE = "/home/chrizandr/data/Telugu/writerids.csv"
     results = list()
-    for data_dir in ["/home/chrizandr/Texture_Analysis/source/strokes/"]:
-        for filename in ["strokes_auto_29dutch"]:
+    files = ["auto_enc_color_maps_lbp", "linear_color_maps_lbp", "cmass_color_maps_lbp"]
+    for data_dir in ["/home/chrizandr/data/Telugu/"]:
+        for filename in files:
             print("Classifying : " + filename)
+            r = []
             for i in range(1, 11):
                 evl = classify(data_dir+filename+".csv", top=i)
-                print("Evaluating")
+                print("Evaluating", filename, i)
                 # ------------------------------------
-                results.append((filename, evl))
+                r.append((filename, evl))
+            results.append(r)
+    for i, f in enumerate(files):
+        print(f)
+        for a, b in results[i]:
+            print(b)
     pdb.set_trace()

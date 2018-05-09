@@ -46,29 +46,29 @@ def partition_data(data_path):
     return files
 
 
-ENCODER = "autoencoder.hd5"
+ENCODER = "autoencoder_tel.hd5"
 CLUSTER = ""
-images = partition_data("sim/")
+images = partition_data("rep/")
 X, y = get_data(len(images), 25, images, "")
 autoencoder = load_model(ENCODER)
 
-input_layer = autoencoder.input
-output_layer = autoencoder.layers[1].output
-encoder = Model(input_layer, output_layer)
+# input_layer = autoencoder.input
+# output_layer = autoencoder.layers[1].output
+# encoder = Model(input_layer, output_layer)
 
-output = encoder.predict(X) * 1000
-pdb.set_trace()
+output = autoencoder.predict(X)
+# pdb.set_trace()
 # plt.subplot(121)
 # plt.plot(output[0])
 # plt.subplot(122)
 # plt.plot(output[1])
 # plt.show()
 #
-# for i in range(X.shape[0]):
-#     plt.subplot(241 + i)
-#     plt.imshow(X[i].reshape(25, 25), 'gray')
-#
-# for i in range(X.shape[0]):
-#     plt.subplot(245 + i)
-#     plt.imshow(output[i].reshape(25, 25), 'gray')
-# plt.show()
+for i in range(X.shape[0]):
+    plt.subplot(241 + i)
+    plt.imshow(1-X[i].reshape(25, 25), 'gray')
+
+for i in range(X.shape[0]):
+    plt.subplot(245 + i)
+    plt.imshow(1-output[i].reshape(25, 25), 'gray')
+plt.show()
